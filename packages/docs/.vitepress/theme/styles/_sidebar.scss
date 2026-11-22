@@ -1,0 +1,10 @@
+.VPSidebar .VPSidebarItem {
+	&:not(.level-0) > .items,
+	&.level-0 .items {
+		padding-left: 12px;
+	}
+
+	&:not(.is-link) > .item .text {
+		color: var(--vp-c-text-3);
+	}
+}

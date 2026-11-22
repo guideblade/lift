@@ -1,0 +1,12 @@
+---
+import Layout from '@widgets/layout'
+import PageSection from '@primitives/section'
+import { withBase } from '@libs/url'
+---
+
+<Layout seo={{ title: 'Page not found', canonical: false, noindex: true }}>
+	<PageSection>
+		<h1>Page not found</h1>
+		<a href={withBase('/')}>Home</a>
+	</PageSection>
+</Layout>

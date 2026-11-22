@@ -1,0 +1,40 @@
+@use 'sass:list';
+@use 'sass:map';
+@use '@styles/tools.scss' as *;
+
+$variables: (
+	value: --service-proximity,
+	x: --service-proximity-x,
+	y: --service-proximity-y,
+);
+$-states: (far, near, over);
+
+@function name($channel) {
+	@if not map.has-key($variables, $channel) {
+		@error 'Unknown proximity channel `#{$channel}`. Expected one of: #{map.keys($variables)}.';
+	}
+
+	@return map.get($variables, $channel);
+}
+
+@function value() {
+	@return var(#{name(value)});
+}
+
+@function x() {
+	@return var(#{name(x)});
+}
+
+@function y() {
+	@return var(#{name(y)});
+}
+
+@mixin state($state) {
+	@if not list.index($-states, $state) {
+		@error 'Unknown proximity state `#{$state}`. Expected one of: #{$-states}.';
+	} @else {
+		&[#{data-attribute(service-proximity-state)}='#{$state}'] {
+			@content;
+		}
+	}
+}

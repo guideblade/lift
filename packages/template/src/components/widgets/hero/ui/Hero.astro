@@ -1,0 +1,80 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { type BaseProps, deriveName } from '@libs/astro'
+import { createBlock } from '@libs/bem'
+import type { HeroContent } from '../model/hero'
+import Photo from '@blocks/photo'
+import Button from '@primitives/(button)/button'
+import Text from '@primitives/text'
+import { componentAttributes } from '@libs/attributes'
+
+const component = createBlock(deriveName(Astro.self))
+
+type Props = BaseProps & Omit<HTMLAttributes<'div'>, 'class' | 'title'> & HeroContent
+
+const {
+	variant = 'primary',
+	class: className,
+	title,
+	description,
+	sampleSlots,
+	hover,
+	hoverSource,
+	...props
+} = Astro.props as Props
+const SampleDefault = sampleSlots?.default
+---
+
+<div
+	{...componentAttributes(component.block, { hover, hoverSource })}
+	{...props}
+	class:list={[component.block, component.variant(variant), className]}>
+	<div class={component.element('inner')}>
+		<div class={component.element('background')}>
+			<Photo name="image-hero" alt="" layout="full-size-cover" priority />
+		</div>
+		<div class={component.element('content')}>
+			<Text tag="h1" text={title} />
+			{description && <Text tag="p" text={description} />}
+			<a href="/components">
+				<Button tag="div" variant="primary" text="Explore components" />
+			</a>
+			<slot>
+				{SampleDefault ? (
+					<SampleDefault />
+				) : (
+					<Text tag="p" text="Fallback content" />
+				)}
+			</slot>
+		</div>
+	</div>
+</div>
+
+<style lang="scss">
+	@use '@styles/tools.scss' as *;
+
+	@use './hero.scss' as *;
+	@use 'block:name' as block;
+
+	$name: block.$name;
+
+	@layer widget {
+		.#{$name} {
+			$self: &;
+
+			@include is-container;
+
+			@include cq(small) {
+				@include small($self);
+			}
+
+			@include cq(medium) {
+				@include medium($self);
+			}
+
+			@include cq(large) {
+				@include large($self);
+			}
+		}
+	}
+</style>

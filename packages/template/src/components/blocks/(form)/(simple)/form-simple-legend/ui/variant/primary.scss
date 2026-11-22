@@ -1,0 +1,8 @@
+@use '@styles/tools.scss' as *;
+
+@mixin small($self) {
+	--legend-font-size: #{pxr(14px)};
+	--legend-font-weight: 600;
+	--legend-color: #{color(symbol)};
+	display: block;
+}

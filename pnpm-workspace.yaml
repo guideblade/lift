@@ -1,0 +1,13 @@
+packages:
+    - "packages/*"
+
+allowBuilds:
+    "@parcel/watcher": true
+    esbuild: true
+    sharp: true
+    vnu-jar: true
+
+overrides:
+    "astro>sharp": 0.35.5
+    esbuild: 0.28.1
+    tsx: 4.23.11

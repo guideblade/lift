@@ -1,0 +1,18 @@
+---
+import Layout from '@widgets/layout'
+import Layer from '@widgets/layout/layer'
+import Hero, { samples as heroSamples } from '@widgets/hero'
+import PageSection from '@primitives/section'
+import Icon from '@primitives/icon'
+import Text from '@primitives/text'
+import HeaderNav, { samples as headerNavSamples } from '@blocks/(header)/header-nav'
+---
+
+<Layout>
+	<Layer slot="layers" level={2}>
+		<HeaderNav {...headerNavSamples.primary} />
+	</Layer>
+	<PageSection>
+		<Hero {...heroSamples.primary} />
+	</PageSection>
+</Layout>

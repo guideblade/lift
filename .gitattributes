@@ -1,0 +1,28 @@
+* filter=lfs diff=lfs merge=lfs -text
+
+.gitattributes !filter !diff !merge text eol=lf
+.gitignore !filter !diff !merge text eol=lf
+.nvmrc !filter !diff !merge text eol=lf
+.env.example !filter !diff !merge text eol=lf
+.gitlab-ci.yml !filter !diff !merge text eol=lf
+LICENSE !filter !diff !merge text eol=lf
+
+*.astro !filter !diff !merge text eol=lf
+*.ts !filter !diff !merge text eol=lf
+*.tsx !filter !diff !merge text eol=lf
+*.js !filter !diff !merge text eol=lf
+*.mjs !filter !diff !merge text eol=lf
+*.mts !filter !diff !merge text eol=lf
+*.cjs !filter !diff !merge text eol=lf
+*.vue !filter !diff !merge text eol=lf
+*.scss !filter !diff !merge text eol=lf
+*.css !filter !diff !merge text eol=lf
+*.html !filter !diff !merge text eol=lf
+*.svg !filter !diff !merge text eol=lf
+*.json !filter !diff !merge text eol=lf
+*.jsonc !filter !diff !merge text eol=lf
+*.code-snippets !filter !diff !merge text eol=lf
+*.yaml !filter !diff !merge text eol=lf
+*.yml !filter !diff !merge text eol=lf
+*.md !filter !diff !merge text eol=lf
+*.txt !filter !diff !merge text eol=lf

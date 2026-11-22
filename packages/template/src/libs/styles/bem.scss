@@ -1,0 +1,48 @@
+@use 'sass:list';
+@use 'sass:map';
+@use 'sass:string';
+@use 'config:bem' as *;
+
+$-identifier: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_';
+
+@function -escape($value) {
+	$result: '';
+
+	@for $index from 1 through string.length($value) {
+		$char: string.slice($value, $index, $index);
+
+		@if string.index($-identifier, $char) {
+			$result: $result + $char;
+		} @else {
+			$result: $result + '\\' + $char;
+		}
+	}
+
+	@return $result;
+}
+
+@function be($block, $name) {
+	$sep: -escape(map.get($bem, element));
+
+	@return '#{$block}#{$sep}#{$name}';
+}
+
+@function bd($block, $key) {
+	$name: '#{$block}';
+
+	@if string.index($name, '.') == 1 {
+		$name: string.slice($name, 2);
+	}
+
+	@return 'data-#{$name}-#{$key}';
+}
+
+@function bm($block, $name) {
+	$sep: -escape(map.get($bem, modifier));
+
+	@return '#{$block}#{$sep}#{$name}';
+}
+
+@function bs($state) {
+	@return '.#{-escape(map.get($bem, state))}#{$state}';
+}

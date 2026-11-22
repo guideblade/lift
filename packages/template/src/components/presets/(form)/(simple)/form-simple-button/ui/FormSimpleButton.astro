@@ -1,0 +1,15 @@
+---
+import type { ComponentProps } from 'astro/types'
+import FormSimpleButton from '@blocks/(form)/(simple)/form-simple-button'
+import Button from '@primitives/(button)/button'
+
+type Props = ComponentProps<typeof Button>
+
+const { class: className, ...props } = Astro.props as Props
+---
+
+<FormSimpleButton class:list={[className]}>
+	<Fragment slot="button">
+		<Button {...props} />
+	</Fragment>
+</FormSimpleButton>

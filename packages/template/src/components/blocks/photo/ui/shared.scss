@@ -1,0 +1,59 @@
+@use '@styles/tools.scss' as *;
+
+$fits: cover, contain;
+
+@mixin small($self) {
+	display: block;
+
+	#{be($self, 'img')} {
+		display: block;
+	}
+
+	&#{bm('', 'missing')} {
+		display: grid;
+		place-items: center;
+		width: 100%;
+		height: 100%;
+		min-height: pxr(120px);
+		padding: pxr(16px);
+		font-family: monospace;
+		color: #b00020;
+		background: #fff0f2;
+		outline: 2px dashed #b00020;
+		outline-offset: -2px;
+	}
+
+	@each $fit in $fits {
+		&#{bm('', 'layout-full-width-#{$fit}')} {
+			width: 100%;
+
+			#{be($self, 'img')} {
+				object-fit: $fit;
+				width: 100%;
+				height: 100%;
+			}
+		}
+
+		&#{bm('', 'layout-full-height-#{$fit}')} {
+			width: fit-content;
+			height: 100%;
+
+			#{be($self, 'img')} {
+				object-fit: $fit;
+				width: auto;
+				height: 100%;
+			}
+		}
+
+		&#{bm('', 'layout-full-size-#{$fit}')} {
+			width: 100%;
+			height: 100%;
+
+			#{be($self, 'img')} {
+				object-fit: $fit;
+				width: 100%;
+				height: 100%;
+			}
+		}
+	}
+}

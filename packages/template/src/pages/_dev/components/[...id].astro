@@ -1,0 +1,173 @@
+---
+import Layout from '@widgets/layout'
+import { withBase } from '@libs/url'
+import { config } from '@config'
+import DocsNav from './_ui/docs-nav/DocsNav.astro'
+import DocsPlayground from './_ui/docs-playground/DocsPlayground.vue'
+import { components, editableValues, findEntry, samplesOf } from './_lib/docs.ts'
+import { summary } from './_lib/marks.ts'
+import { stateKey } from './_lib/state.ts'
+import './_ui/docs-theme/tron.css'
+import './_ui/docs-theme/layout.scss'
+
+export function getStaticPaths() {
+	return [
+		{ params: { id: undefined } },
+		...components.map(entry => ({ params: { id: entry.id } })),
+	]
+}
+
+const entry = findEntry(Astro.params.id)
+const samples = entry ? await samplesOf(entry) : {}
+const editable = entry
+	? Object.fromEntries(
+			Object.entries(samples).map(([name, sample]) => [
+				name,
+				editableValues(entry, sample),
+			]),
+		)
+	: {}
+const Readme = entry?.readme ? (await entry.readme()).Content : null
+const widths = Object.entries(config.devices).map(([name, rem]) => ({
+	name,
+	width: rem * 16 || 375,
+}))
+const marks = summary(components)
+const readme =
+	'flex flex-col gap-3 leading-relaxed text-neutral-300 [&_a]:text-sky-300 [&_a]:underline [&_code]:rounded [&_code]:bg-neutral-800/70 [&_code]:px-1 [&_h1]:text-lg [&_h1]:font-semibold [&_h1]:text-white [&_h2]:mt-2 [&_h2]:font-semibold [&_h2]:text-white [&_h3]:font-semibold [&_h3]:text-white [&_ol]:list-decimal [&_ol]:pl-5 [&_pre]:overflow-x-auto [&_pre]:rounded-md [&_pre]:p-3 [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_table]:w-full [&_table]:text-left [&_td]:border-t [&_td]:border-neutral-800 [&_td]:py-1.5 [&_td]:pr-4 [&_th]:py-1.5 [&_th]:pr-4 [&_th]:font-medium [&_th]:text-neutral-400 [&_ul]:list-disc [&_ul]:pl-5'
+---
+
+<Layout
+	seo={{ title: entry ? `${entry.title} | Components` : 'Components' }}
+	class="scheme-dark">
+	<Fragment slot="header" />
+	<Fragment slot="footer" />
+	<div
+		class="group/docs grid h-dvh grid-rows-[auto_minmax(0,1fr)] overflow-hidden bg-neutral-950 text-sm text-neutral-300 data-dragging:select-none lg:grid-cols-[15rem_minmax(0,1fr)] lg:grid-rows-1"
+		data-docs-app
+		data-panel="right">
+		<script is:inline define:vars={{ key: stateKey }}>
+			try {
+				const app = document.currentScript.parentElement
+				const state = JSON.parse(localStorage.getItem(key) ?? '{}') ?? {}
+				const px = value => (Number(value) > 0 ? `${Number(value)}px` : '')
+				app.dataset.panel = state.panel === 'bottom' ? 'bottom' : 'right'
+				app.style.setProperty('--docs-panel-bottom', px(state.bottom))
+				app.style.setProperty('--docs-panel-right', px(state.right))
+				app.style.setProperty('--docs-frame-width', px(state.width))
+			} catch {}
+		</script>
+		<DocsNav current={entry?.id} />
+		<div class="flex min-h-0 min-w-0 flex-col" data-docs-main>
+			{entry ? (
+				<DocsPlayground
+					client:load
+					title={entry.title}
+					source={entry.source}
+					dev={import.meta.env.DEV}
+					preview={withBase(`components/preview/${entry.id}`)}
+					samples={editable}
+					fields={entry.props}
+					widths={widths}
+					tags={entry.tags}
+					checks={entry.checks}
+					instance={entry.instance}
+					manager={entry.manager}>
+					<div slot="docs" class="flex max-w-3xl flex-col gap-5 p-4">
+						{entry.slots.length > 0 && (
+							<section class="flex flex-wrap items-center gap-2">
+								<h2 class="text-[0.6875rem] tracking-wider text-neutral-500 uppercase">
+									Slots
+								</h2>
+								{entry.slots.map(slot => (
+									<code class="rounded bg-neutral-800/70 px-2 py-0.5 text-xs">
+										{slot}
+									</code>
+								))}
+							</section>
+						)}
+						{Readme ? (
+							<article class={readme}>
+								<Readme />
+							</article>
+						) : (
+							<p class="text-neutral-500">No README.</p>
+						)}
+					</div>
+				</DocsPlayground>
+			) : (
+				<div class="flex max-w-2xl flex-col gap-3 overflow-y-auto p-8 text-neutral-400">
+					<h1 class="text-2xl font-bold text-white">Components</h1>
+					<p>
+						Every primitive, block, preset and widget in{' '}
+						<code>src/components</code> gets a page here. Props come from its{' '}
+						<code>Props</code> type, samples from its <code>samples/</code>{' '}
+						folder. Without samples, a default one is generated from the
+						types.
+					</p>
+					<p>
+						Press <kbd class="rounded border border-neutral-700 px-1">/</kbd>{' '}
+						to find a component. A README can carry tags like <code>#UI</code>{' '}
+						and checks like <code>- [ ] prod ready</code>; they show as
+						badges, and the search takes <code>#ui</code>,{' '}
+						<code>is:prod-ready</code> and <code>not:prod-ready</code>.
+					</p>
+					{marks.tags.length > 0 && (
+						<section class="flex flex-wrap items-center gap-1.5">
+							<h2 class="mr-1 text-[0.6875rem] tracking-wider text-neutral-500 uppercase">
+								Tags
+							</h2>
+							{marks.tags.map(tag => (
+								<button
+									type="button"
+									class="rounded bg-neutral-800 px-1.5 py-0.5 text-xs text-neutral-300 hover:bg-neutral-700"
+									data-docs-filter={tag.token}>
+									#{tag.label}{' '}
+									<span class="text-neutral-500">{tag.count}</span>
+								</button>
+							))}
+						</section>
+					)}
+					{marks.checks.length > 0 && (
+						<section class="flex flex-col gap-1.5">
+							<h2 class="text-[0.6875rem] tracking-wider text-neutral-500 uppercase">
+								Checks
+							</h2>
+							{marks.checks.map(check => (
+								<div class="flex flex-wrap items-center gap-1.5">
+									<span class="text-neutral-300">{check.label}</span>
+									<button
+										type="button"
+										class="rounded bg-emerald-500/15 px-1.5 py-0.5 text-xs text-emerald-300 hover:bg-emerald-500/25"
+										data-docs-filter={check.doneToken}>
+										✓ {check.done} done
+									</button>
+									<button
+										type="button"
+										class="rounded border border-neutral-700 px-1.5 py-0.5 text-xs text-neutral-400 hover:border-neutral-500"
+										data-docs-filter={check.openToken}>
+										○ {check.total - check.done} open
+									</button>
+								</div>
+							))}
+						</section>
+					)}
+				</div>
+			)}
+		</div>
+	</div>
+</Layout>
+
+<script>
+	import { routeLinks } from './_lib/navigation.ts'
+	import { bindSidebar } from './_lib/sidebar.ts'
+	import { bindDrawer } from './_lib/drawer.ts'
+
+	const app = document.querySelector<HTMLElement>('[data-docs-app]')
+	const nav = app?.querySelector<HTMLElement>('[data-docs-nav]')
+	if (app && nav) {
+		bindDrawer(nav)
+		const sidebar = bindSidebar(nav)
+		routeLinks(app, (_next, url) => sidebar.select(url))
+	}
+</script>

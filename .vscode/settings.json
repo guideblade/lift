@@ -1,0 +1,72 @@
+{
+	"editor.codeActionsOnSave": {
+		"source.fixAll.oxc": "explicit",
+		"source.fixAll.stylelint": "explicit"
+	},
+	"editor.defaultFormatter": "oxc.oxc-vscode",
+	"editor.formatOnSave": true,
+	"editor.detectIndentation": false,
+	"editor.insertSpaces": false,
+	"editor.tabSize": 4,
+	"explorer.fileNesting.enabled": true,
+	"explorer.fileNesting.expand": false,
+	"explorer.fileNesting.patterns": {
+		"package.json": ".markdownlint-cli2.yaml, oxlint.config.ts, oxfmt.config.ts, .nvmrc",
+		"README.md": "AGENTS.md",
+		"pnpm-workspace.yaml": "pnpm-lock.yaml",
+		".gitignore": ".gitattributes, .gitlab-ci.yml"
+	},
+	"stylelint.validate": ["css", "scss", "astro"],
+	"stylelint.configFile": "./packages/template/.stylelintrc.json",
+	"playwright.env": {
+		"NODE_OPTIONS": "--dns-result-order=ipv4first"
+	},
+	"[skill]": {
+		"editor.insertSpaces": true,
+		"editor.tabSize": 4
+	},
+	"[yaml]": {
+		"editor.insertSpaces": true
+	},
+	"[markdown]": {
+		"editor.insertSpaces": true,
+		"editor.tabSize": 4
+	},
+	"[scss]": {
+		"editor.formatOnSave": true
+	},
+	"[astro]": {
+		"editor.defaultFormatter": "astro-build.astro-vscode",
+		"editor.formatOnSave": true
+	},
+	"workbench.colorCustomizations": {
+		"activityBar.activeBackground": "#171f2e",
+		"activityBar.background": "#171f2e",
+		"activityBar.foreground": "#e7e7e7",
+		"activityBar.inactiveForeground": "#e7e7e799",
+		"activityBarBadge.background": "#7f4056",
+		"activityBarBadge.foreground": "#e7e7e7",
+		"commandCenter.border": "#e7e7e799",
+		"sash.hoverBorder": "#171f2e",
+		"statusBar.background": "#06080c",
+		"statusBar.foreground": "#e7e7e7",
+		"statusBarItem.hoverBackground": "#171f2e",
+		"statusBarItem.remoteBackground": "#6a3547",
+		"statusBarItem.remoteForeground": "#e7e7e7",
+		"titleBar.activeBackground": "#06080c",
+		"titleBar.activeForeground": "#e7e7e7",
+		"titleBar.inactiveBackground": "#06080c99",
+		"titleBar.inactiveForeground": "#e7e7e799",
+		"activityBar.activeBorder": "#e7e7e7",
+		"activityBarTop.activeBackground": "#171f2e",
+		"activityBarTop.activeBorder": "#e7e7e7",
+		"activityBarTop.background": "#171f2e",
+		"activityBarTop.foreground": "#e7e7e7",
+		"activityBarTop.inactiveForeground": "#e7e7e799",
+		"commandCenter.foreground": "#e7e7e7",
+		"statusBar.debuggingBackground": "#06080c",
+		"statusBar.debuggingForeground": "#e7e7e7",
+		"statusBar.inactiveBackground": "#06080c"
+	},
+	"peacock.color": "#06080c"
+}

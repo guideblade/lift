@@ -1,0 +1,75 @@
+{
+	"name": "@lift/cli",
+	"private": true,
+	"license": "MIT",
+	"author": "Nikolay Kulikov <nick@guideblade.ru>",
+	"bin": {
+		"lift": "./bin/run.ts"
+	},
+	"type": "module",
+	"scripts": {
+		"lift": "node bin/run.ts",
+		"check": "tsc --noEmit",
+		"format": "oxfmt",
+		"format:check": "oxfmt --check",
+		"lint": "oxlint --fix --deny-warnings && pnpm run lint:md --fix",
+		"lint:check": "oxlint --deny-warnings && pnpm run lint:md",
+		"lint:md": "markdownlint-cli2",
+		"lint:fix": "oxlint --fix",
+		"verify": "pnpm run format:check && pnpm run check && pnpm run lint:check"
+	},
+	"dependencies": {
+		"@astrojs/compiler": "^2.13.1",
+		"@oclif/core": "^5.1.8",
+		"@playwright/test": "^1.63.0",
+		"chrome-launcher": "^1.2.2",
+		"lighthouse": "^13.5.0",
+		"oxc-parser": "^0.151.0",
+		"parse5": "^8.0.1",
+		"postcss": "^8.5.26",
+		"postcss-scss": "^4.0.9",
+		"vite": "8.3.8",
+		"vnu-jar": "^26.9.27",
+		"yaml": "^2.9.0"
+	},
+	"devDependencies": {
+		"@types/node": "^24.13.6",
+		"markdownlint-cli2": "^0.24.2",
+		"oxfmt": "^0.75.0",
+		"oxlint": "^1.90.0",
+		"typescript": "^6.0.3"
+	},
+	"oclif": {
+		"bin": "lift",
+		"commands": {
+			"identifier": "default",
+			"strategy": "explicit",
+			"target": "./src/commands.ts"
+		},
+		"description": "Lift projects, conventions and checks\nCreate: pnpm lift project create my-site\nTarget a project: pnpm lift --project my-site pages create about\n--project accepts a project name, folder, or lift.aliases name. Without it, Lift uses the nearest project, then the configured project alias.",
+		"hooks": {
+			"init": "./src/hooks/topics.ts"
+		},
+		"topicSeparator": " ",
+		"topics": {
+			"briefs": {
+				"description": "Context in _briefs/<name>/BRIEF.md, root first"
+			},
+			"project": {
+				"description": "The Lift project itself"
+			},
+			"skills": {
+				"description": "Workflows in _skills/<name>/SKILL.md, root first"
+			}
+		}
+	},
+	"engines": {
+		"node": ">=24"
+	},
+	"lift": {
+		"aliases": {
+			"project": "../template",
+			"template": "../template"
+		}
+	}
+}

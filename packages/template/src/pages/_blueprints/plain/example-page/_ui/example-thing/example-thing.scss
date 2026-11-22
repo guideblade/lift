@@ -1,0 +1,13 @@
+@use '@styles/tools.scss' as *;
+
+@mixin small($self) {
+	@content;
+}
+
+@mixin medium($self) {
+	@content;
+}
+
+@mixin large($self) {
+	@content;
+}

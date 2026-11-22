@@ -1,0 +1,19 @@
+---
+import type { ComponentProps } from 'astro/types'
+import FormSimpleSelect from '@blocks/(form)/(simple)/form-simple-select'
+import Select from '@primitives/select'
+
+type Props = Omit<ComponentProps<typeof Select>, 'variant'> & {
+	variant?: ComponentProps<typeof FormSimpleSelect>['variant']
+}
+
+const { variant, class: className, ...props } = Astro.props as Props
+---
+
+<FormSimpleSelect variant={variant} class:list={[className]}>
+	<Fragment slot="select">
+		<Select variant="secondary" {...props}>
+			<slot />
+		</Select>
+	</Fragment>
+</FormSimpleSelect>

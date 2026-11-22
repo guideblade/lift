@@ -1,0 +1,19 @@
+---
+import type { ComponentProps } from 'astro/types'
+import FormSimpleDatalist from '@blocks/(form)/(simple)/form-simple-datalist'
+import Datalist from '@primitives/datalist'
+
+type Props = Omit<ComponentProps<typeof Datalist>, 'variant'> & {
+	variant?: ComponentProps<typeof FormSimpleDatalist>['variant']
+}
+
+const { variant, class: className, ...props } = Astro.props as Props
+---
+
+<FormSimpleDatalist variant={variant} class:list={[className]}>
+	<Fragment slot="datalist">
+		<Datalist variant="secondary" {...props}>
+			<slot />
+		</Datalist>
+	</Fragment>
+</FormSimpleDatalist>

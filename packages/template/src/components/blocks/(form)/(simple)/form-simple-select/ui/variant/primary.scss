@@ -1,0 +1,160 @@
+@use '@styles/tools.scss' as *;
+@mixin small($self) {
+	--form-simple-select-font-size: var(--form-font-size, #{pxr(16px)});
+	--form-simple-select-padding-x: var(--form-padding-x, #{pxr(22px)});
+	--form-simple-select-padding-y: var(--form-padding-y, #{pxr(14px)});
+	--form-simple-select-border-width: var(--form-border-width, 2px);
+	--form-simple-select-border-color: var(--form-border-color, #{color(decorator-100)});
+	--form-simple-select-border-color-focus: var(
+		--form-border-color-focus,
+		#{color(decorator)}
+	);
+	--form-simple-select-border-color-invalid: var(
+		--form-border-color-invalid,
+		#{color(semantic-error)}
+	);
+	--form-simple-select-border-radius: var(--form-border-radius, 16px);
+	--form-simple-select-color: var(--form-symbol-color, #{color(symbol)});
+	--form-simple-select-placeholder-color: var(
+		--form-placeholder-color,
+		#{color(symbol-100)}
+	);
+	--form-simple-select-picker-bg: var(--form-picker-bg, #{color(surface)});
+	--form-simple-select-highlight: var(--form-highlight, #{color(surface-100)});
+	--form-simple-select-duration: var(--form-duration, 300ms);
+	--_form-simple-select-border-color: var(--form-simple-select-border-color);
+	position: relative;
+	display: inline-grid;
+	grid-template-areas: 'self';
+
+	> * {
+		grid-area: self;
+	}
+
+	&:focus-within,
+	&:has(option:checked:not([value=''])) {
+		--_form-simple-select-border-color: var(--form-simple-select-border-color-focus);
+	}
+
+	&:has(:user-invalid) {
+		--form-simple-select-border-color: var(--form-simple-select-border-color-invalid);
+		--form-simple-select-border-color-focus: var(
+			--form-simple-select-border-color-invalid
+		);
+	}
+
+	#{be($self, 'backdrop')} {
+		position: relative;
+		z-index: 1;
+		border: var(--form-simple-select-border-width) solid
+			var(--_form-simple-select-border-color);
+		border-radius: var(--form-simple-select-border-radius);
+		transition: border-color var(--form-simple-select-duration) ease;
+		pointer-events: none;
+	}
+
+	#{be($self, 'select')} {
+		position: relative;
+		z-index: 2;
+		display: grid;
+		min-width: 0;
+
+		:global(select) {
+			width: 100%;
+			min-width: 0;
+			padding: var(--form-simple-select-padding-y)
+				var(--form-simple-select-padding-x);
+			font: inherit;
+			font-size: var(--form-simple-select-font-size);
+			color: var(--form-simple-select-color);
+			background-color: transparent;
+			border: none;
+			outline: none;
+			cursor: default;
+
+			&:has(option:checked[value='']) {
+				color: var(--form-simple-select-placeholder-color);
+			}
+		}
+
+		:global(option),
+		:global(optgroup) {
+			color: var(--form-simple-select-color);
+			background-color: var(--form-simple-select-picker-bg);
+		}
+
+		@supports (appearance: base-select) {
+			:global(select),
+			:global(select)::picker(select) {
+				appearance: base-select;
+			}
+
+			:global(select)::picker-icon {
+				color: var(--form-simple-select-placeholder-color);
+				transition: rotate var(--form-simple-select-duration) ease;
+			}
+
+			:global(select:open)::picker-icon {
+				rotate: 180deg;
+			}
+
+			:global(select)::picker(select) {
+				margin-block: pxr(4px);
+				padding: pxr(8px);
+				background-color: var(--form-simple-select-picker-bg);
+				border: 2px solid var(--form-simple-select-border-color);
+				border-radius: var(--form-simple-select-border-radius);
+				box-shadow: 0 10px 30px rgb(0 0 0 / 25%);
+			}
+
+			:global(option) {
+				padding: pxr(10px) pxr(14px);
+				font-size: pxr(15px);
+				background-color: transparent;
+				border-radius: 10px;
+				transition: background-color 150ms ease;
+				cursor: default;
+
+				&::checkmark {
+					display: none;
+				}
+
+				&:is(:focus-visible, :checked) {
+					background-color: var(--form-simple-select-highlight);
+				}
+
+				&:disabled {
+					color: var(--form-simple-select-placeholder-color);
+					background-color: transparent;
+					cursor: not-allowed;
+				}
+			}
+
+			:global(optgroup) {
+				padding-top: pxr(8px);
+				font-size: pxr(11px);
+				font-weight: 700;
+				letter-spacing: 0.05em;
+				text-transform: uppercase;
+				color: var(--form-simple-select-placeholder-color);
+				background-color: transparent;
+
+				:global(option) {
+					font-size: pxr(15px);
+					font-weight: 400;
+					letter-spacing: normal;
+					text-transform: none;
+					color: var(--form-simple-select-color);
+				}
+			}
+		}
+	}
+
+	@include hover($self) {
+		--_form-simple-select-border-color: var(--form-simple-select-border-color-focus);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		--form-simple-select-duration: 0ms;
+	}
+}

@@ -1,0 +1,14 @@
+*
+!*/
+.*/
+!.gitignore
+!.gitattributes
+!/*.txt
+
+!/.markdownlint-cli2.yaml
+!/README.md
+!/package.json
+!/tsconfig.json
+!/*.config.ts
+!/bin/**
+!/src/**

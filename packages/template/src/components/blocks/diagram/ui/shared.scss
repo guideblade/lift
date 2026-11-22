@@ -1,0 +1,16 @@
+@use '@styles/tools.scss' as *;
+
+@mixin small($self) {
+	--pele-font: var(--font-inter);
+	--pele-font-mono: var(--font-jetbrains-mono);
+	--pele-radius: 6px;
+	display: block;
+	padding: pxr(16px);
+	background-color: var(--pele-bg);
+	border-radius: 8px;
+
+	#{be($self, 'stage')} {
+		display: block;
+		width: 100%;
+	}
+}

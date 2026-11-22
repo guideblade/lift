@@ -1,0 +1,31 @@
+@forward 'config:devices';
+@forward 'config:fluid';
+@forward 'config:instance-states';
+@forward 'config:data-attributes';
+@use 'config:devices' as *;
+
+$transition: 60ms ease;
+$color-schemes: (
+	light: 'light',
+	dark: 'dark',
+);
+$states: (
+	selected,
+	checked,
+	open,
+	expanded,
+	loading,
+	disabled,
+	opening,
+	closing,
+	closed,
+	expanding,
+	disabling,
+	enabling,
+	idle
+);
+$inner: 'inner';
+
+@function color($name) {
+	@return var(--color-#{$name});
+}

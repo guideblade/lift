@@ -1,0 +1,63 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { type BaseProps, deriveName } from '@libs/astro'
+import { createBlock } from '@libs/bem'
+import { AVAILABLE_ICONS, type IconName } from '../_generated/icons.ts'
+import sprite from '/.cache/icon/sprite.svg?url&no-inline'
+import { componentAttributes } from '@libs/attributes'
+
+const component = createBlock(deriveName(Astro.self))
+
+type Props = BaseProps &
+	Omit<HTMLAttributes<'svg'>, 'class' | 'name'> & {
+		name: IconName | (string & {})
+	}
+
+const {
+	name,
+	variant = 'primary',
+	class: className,
+	hover,
+	hoverSource,
+	...props
+} = Astro.props as Props
+
+if (!(AVAILABLE_ICONS as readonly string[]).includes(name)) {
+	const available = AVAILABLE_ICONS.join(', ')
+	throw new Error(
+		`[Icon] Icon "${name}" was not found in src/assets/(icon)/. Available icons: ${available || 'none'}`,
+	)
+}
+---
+
+<svg
+	{...componentAttributes(component.block, { hover, hoverSource })}
+	class:list={[component.block, component.variant(variant), className]}
+	{...props}>
+	<use href={`${sprite}#${name}`} />
+</svg>
+
+<style lang="scss">
+	@use '@styles/tools.scss' as *;
+
+	@use './icon.scss' as *;
+	@use 'block:name' as block;
+
+	$name: block.$name;
+
+	@layer primitive {
+		.#{$name} {
+			$self: &;
+
+			@include cq(small) {
+				@include small($self);
+			}
+			@include cq(medium) {
+				@include medium($self);
+			}
+			@include cq(large) {
+				@include large($self);
+			}
+		}
+	}
+</style>

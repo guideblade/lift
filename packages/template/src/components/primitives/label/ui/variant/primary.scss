@@ -1,0 +1,6 @@
+@use '@styles/tools.scss' as *;
+
+@mixin small($self) {
+	padding: pxr(12px);
+	outline: 1px red solid;
+}

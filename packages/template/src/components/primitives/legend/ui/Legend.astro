@@ -1,0 +1,54 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { type BaseProps, deriveName } from '@libs/astro'
+import { createBlock } from '@libs/bem'
+import type { LegendContent } from '../model/legend'
+import { componentAttributes } from '@libs/attributes'
+
+const component = createBlock(deriveName(Astro.self))
+
+type Props = BaseProps<'secondary'> &
+	Omit<HTMLAttributes<'legend'>, 'class'> &
+	LegendContent
+
+const {
+	variant = 'primary',
+	class: className,
+	sampleSlots,
+	hover,
+	hoverSource,
+	...props
+} = Astro.props as Props
+const SampleDefault = sampleSlots?.default
+---
+
+<legend
+	{...componentAttributes(component.block, { hover, hoverSource })}
+	{...props}
+	class:list={[component.block, component.variant(variant), className]}>
+	<slot>{SampleDefault && <SampleDefault />}</slot>
+</legend>
+
+<style lang="scss">
+	@use '@styles/tools.scss' as *;
+	@use './legend.scss' as *;
+	@use 'block:name' as block;
+
+	$name: block.$name;
+
+	@layer primitive {
+		.#{$name} {
+			$self: &;
+
+			@include cq(small) {
+				@include small($self);
+			}
+			@include cq(medium) {
+				@include medium($self);
+			}
+			@include cq(large) {
+				@include large($self);
+			}
+		}
+	}
+</style>

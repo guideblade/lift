@@ -1,0 +1,17 @@
+---
+import type { ComponentProps } from 'astro/types'
+import FormSimpleInput from '@blocks/(form)/(simple)/form-simple-input'
+import Input from '@primitives/input'
+
+type Props = Omit<ComponentProps<typeof Input>, 'variant'> & {
+	variant?: ComponentProps<typeof FormSimpleInput>['variant']
+}
+
+const { variant, class: className, ...props } = Astro.props as Props
+---
+
+<FormSimpleInput variant={variant} class:list={[className]}>
+	<Fragment slot="input">
+		<Input variant="secondary" {...props} />
+	</Fragment>
+</FormSimpleInput>

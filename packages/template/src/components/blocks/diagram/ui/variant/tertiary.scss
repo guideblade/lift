@@ -1,0 +1,14 @@
+@use '@styles/tools.scss' as *;
+
+@mixin small($self) {
+	--pele-bg: light-dark(#fffcf0, #100f0f);
+	--pele-fg: light-dark(#100f0f, #cecdc3);
+	--pele-muted: light-dark(#6f6e69, #878580);
+	--pele-line: light-dark(#100f0f, #cecdc3);
+	--pele-surface: light-dark(#f2f0e5, #1c1b1a);
+	--pele-surface-alt: light-dark(#e6e4d9, #282726);
+	--pele-border: light-dark(#cecdc3, #403e3c);
+	--pele-accent: light-dark(#205ea6, #4385be);
+	--pele-critical: light-dark(#af3029, #d14d41);
+	--pele-error: light-dark(#af3029, #d14d41);
+}

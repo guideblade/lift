@@ -1,0 +1,22 @@
+---
+import FormSimpleInput from '@blocks/(form)/(simple)/form-simple-input'
+import FormSimpleButton from '@blocks/(form)/(simple)/form-simple-button'
+import Input from '@primitives/input'
+import Button from '@primitives/(button)/button'
+---
+
+<FormSimpleInput>
+	<Fragment slot="input">
+		<Input
+			variant="secondary"
+			name="email"
+			type="email"
+			placeholder="Email address"
+		/>
+	</Fragment>
+</FormSimpleInput>
+<FormSimpleButton>
+	<Fragment slot="button">
+		<Button text="Subscribe" />
+	</Fragment>
+</FormSimpleButton>

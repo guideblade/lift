@@ -1,0 +1,23 @@
+{
+	"name": "lift",
+	"version": "2.0.0",
+	"private": true,
+	"license": "MIT",
+	"author": "Nikolay Kulikov <nick@guideblade.ru>",
+	"type": "module",
+	"scripts": {
+		"lift": "pnpm --filter @lift/cli lift",
+		"format": "oxfmt . \"!packages/**\" && pnpm -r format",
+		"format:check": "oxfmt --check . \"!packages/**\" && pnpm -r format:check",
+		"lint": "markdownlint-cli2 --fix && pnpm -r lint",
+		"lint:check": "markdownlint-cli2 && pnpm -r lint:check"
+	},
+	"devDependencies": {
+		"markdownlint-cli2": "^0.24.2",
+		"oxfmt": "^0.75.0"
+	},
+	"engines": {
+		"node": ">=24"
+	},
+	"packageManager": "pnpm@11.20.0"
+}

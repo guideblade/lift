@@ -1,0 +1,252 @@
+@use '@styles/tools.scss' as *;
+
+@mixin small($self) {
+	--header-nav-surface: color-mix(in srgb, #{color(surface)} 72%, transparent);
+	--header-nav-line: color-mix(in srgb, #{color(decorator)} 12%, transparent);
+	--header-nav-hover: color-mix(in srgb, #{color(symbol)} 8%, transparent);
+	--header-nav-muted: color-mix(in srgb, #{color(symbol)} 68%, transparent);
+	--header-nav-duration: 240ms;
+	--header-nav-easing: cubic-bezier(0.32, 0.72, 0, 1);
+
+	:global(#{be($self, 'inner')}) {
+		background-color: var(--header-nav-surface);
+		backdrop-filter: blur(20px) saturate(1.6);
+		border-block-end: 1px solid var(--header-nav-line);
+	}
+
+	:global(#{be($self, 'bar')}) {
+		gap: pxr(16px);
+		min-block-size: pxr(60px);
+		padding-inline: pxr(12px) pxr(8px);
+	}
+
+	:global(#{be($self, 'logo')}) {
+		font-size: pxr(22px);
+		font-weight: 600;
+		line-height: 1;
+		letter-spacing: -0.02em;
+	}
+
+	:global(#{be($self, 'logo')} a) {
+		display: inline-flex;
+		padding: pxr(6px) pxr(8px);
+		border-radius: 8px;
+	}
+
+	:global(#{be($self, 'link')}),
+	:global(#{be($self, 'toggle')}),
+	:global(#{be($self, 'burger')}) {
+		display: inline-flex;
+		gap: pxr(6px);
+		align-items: center;
+		padding: pxr(8px) pxr(14px);
+		font-size: pxr(15px);
+		line-height: 1.2;
+		color: var(--header-nav-muted);
+		border-radius: 999px;
+		transition:
+			color $transition,
+			background-color $transition;
+	}
+
+	:global(#{be($self, 'logo')} a:focus-visible),
+	:global(#{be($self, 'link')}:focus-visible),
+	:global(#{be($self, 'toggle')}:focus-visible),
+	:global(#{be($self, 'burger')}:focus-visible),
+	:global(#{be($self, 'back')}:focus-visible),
+	:global(#{be($self, 'next')}:focus-visible) {
+		outline: 2px solid color(symbol);
+		outline-offset: 2px;
+	}
+
+	:global(#{be($self, 'toggle')}::after) {
+		inline-size: pxr(6px);
+		block-size: pxr(6px);
+		translate: 0 -25%;
+		rotate: 45deg;
+		transition:
+			rotate var(--header-nav-duration) var(--header-nav-easing),
+			translate var(--header-nav-duration) var(--header-nav-easing);
+		border-block-end: 1.5px solid currentcolor;
+		border-inline-end: 1.5px solid currentcolor;
+		content: '';
+	}
+
+	:global(#{be($self, 'toggle')}[aria-expanded='true']) {
+		color: color(symbol);
+		background-color: var(--header-nav-hover);
+	}
+
+	:global(#{be($self, 'toggle')}[aria-expanded='true']::after) {
+		translate: 0 25%;
+		rotate: 225deg;
+	}
+
+	:global(#{be($self, 'burger')}) {
+		color: color(symbol);
+		border: 1px solid var(--header-nav-line);
+		cursor: pointer;
+
+		&::-webkit-details-marker {
+			display: none;
+		}
+	}
+
+	:global(#{be($self, 'mobile-panel')}) {
+		padding: pxr(16px);
+		background-color: color(surface);
+		box-shadow: 0 24px 48px -24px rgb(0 0 0 / 35%);
+		border-block-end: 1px solid var(--header-nav-line);
+	}
+
+	:global(#{be($self, 'panel')}) {
+		padding: pxr(32px) pxr(40px) pxr(40px);
+		background-color: color(surface);
+		box-shadow: 0 24px 48px -24px rgb(0 0 0 / 35%);
+		opacity: 1;
+		translate: 0;
+		transition:
+			opacity var(--header-nav-duration) var(--header-nav-easing),
+			translate var(--header-nav-duration) var(--header-nav-easing);
+		border-block-end: 1px solid var(--header-nav-line);
+
+		@starting-style {
+			opacity: 0;
+			translate: 0 pxr(-8px);
+		}
+	}
+
+	:global(#{be($self, 'panel')} a),
+	:global(#{be($self, 'panel')} button) {
+		color: var(--header-nav-muted);
+		transition: color $transition;
+	}
+
+	:global(#{be($self, 'panel')} [aria-pressed='true']) {
+		color: color(symbol);
+	}
+
+	:global(#{be($self, 'menu')}) {
+		gap: pxr(8px);
+	}
+
+	:global(#{be($self, 'step')}) {
+		gap: pxr(12px);
+		margin-block-end: pxr(8px);
+		padding-block-end: pxr(16px);
+		border-block-end: 1px solid var(--header-nav-line);
+	}
+
+	:global(#{be($self, 'back')}) {
+		display: inline-flex;
+		gap: pxr(6px);
+		align-items: center;
+		padding: pxr(6px) pxr(12px) pxr(6px) pxr(8px);
+		font-size: pxr(14px);
+		color: var(--header-nav-muted);
+		border: 1px solid var(--header-nav-line);
+		border-radius: 999px;
+		transition:
+			color $transition,
+			background-color $transition;
+
+		&::before {
+			content: '\2039';
+		}
+	}
+
+	:global(#{be($self, 'title')}) {
+		font-size: pxr(15px);
+		font-weight: 600;
+	}
+
+	:global(#{be($self, 'level')}) {
+		gap: 0;
+	}
+
+	:global(#{be($self, 'entry')}) {
+		border-block-end: 1px solid var(--header-nav-line);
+	}
+
+	:global(#{be($self, 'entry')} > #{be($self, 'link')}),
+	:global(#{be($self, 'next')}) {
+		display: flex;
+		padding-block: pxr(14px);
+		padding-inline: 0;
+		font-size: pxr(20px);
+		color: color(symbol);
+		border-radius: 0;
+	}
+
+	:global(#{be($self, 'next')}::after) {
+		color: var(--header-nav-muted);
+		transition: translate $transition;
+	}
+
+	:global(#{be($self, 'level')} address) {
+		gap: pxr(12px);
+		padding-block: pxr(8px);
+		font-size: pxr(18px);
+	}
+
+	:global(#{be($self, 'link')}),
+	:global(#{be($self, 'toggle')}),
+	:global(#{be($self, 'burger')}),
+	:global(#{be($self, 'back')}) {
+		@include hover($self) {
+			color: color(symbol);
+			background-color: var(--header-nav-hover);
+		}
+	}
+
+	:global(#{be($self, 'panel')} a),
+	:global(#{be($self, 'panel')} button) {
+		@include hover($self) {
+			color: color(symbol);
+		}
+	}
+
+	:global(#{be($self, 'entry')} > #{be($self, 'link')}),
+	:global(#{be($self, 'next')}) {
+		@include hover($self) {
+			background-color: transparent;
+		}
+	}
+
+	:global(#{be($self, 'next')}) {
+		@include hover($self) {
+			&::after {
+				translate: pxr(4px) 0;
+			}
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		--header-nav-duration: 1ms;
+	}
+}
+
+@mixin medium($self) {
+	:global(#{be($self, 'bar')}) {
+		padding-inline: pxr(24px) pxr(16px);
+	}
+}
+
+@mixin large($self) {
+	:global(#{be($self, 'bar')}) {
+		min-block-size: pxr(72px);
+		padding-inline: pxr(28px);
+	}
+
+	:global(#{be($self, 'list')}) {
+		gap: pxr(4px);
+	}
+
+	:global(#{be($self, 'logo')}) {
+		font-size: pxr(26px);
+	}
+
+	:global(#{be($self, 'panel')}) {
+		padding: pxr(32px) pxr(42px) pxr(40px);
+	}
+}

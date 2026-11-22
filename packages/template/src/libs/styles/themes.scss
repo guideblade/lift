@@ -1,0 +1,25 @@
+@use './theme' as *;
+
+@include theme(mono, ());
+
+@layer base {
+	:where(:root),
+	.scheme-auto {
+		color-scheme: light dark;
+	}
+
+	.scheme-light {
+		color-scheme: light;
+	}
+
+	.scheme-dark {
+		color-scheme: dark;
+	}
+
+	.scheme-auto,
+	.scheme-light,
+	.scheme-dark {
+		color: var(--color-symbol);
+		background-color: var(--color-surface);
+	}
+}

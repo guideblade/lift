@@ -1,0 +1,43 @@
+@use 'sass:list';
+@use 'sass:map';
+@use 'sass:meta';
+@use './bem' as *;
+@use './config';
+
+$phases: list.join(map.keys(config.$devices), config.$states);
+
+@mixin phase($phase, $self, $name, $variants: (), $shared: ()) {
+	@if not list.index($phases, $phase) {
+		@error 'Unknown phase `#{$phase}`. Allowed phases: #{$phases}.';
+	}
+
+	@include check-phases($shared);
+
+	@each $variant, $mixins in $variants {
+		@include check-phases($mixins);
+	}
+
+	@if $self {
+		@if map.has-key($shared, $phase) {
+			@include meta.apply(map.get($shared, $phase), $self);
+		}
+
+		@each $variant, $mixins in $variants {
+			@if map.has-key($mixins, $phase) {
+				&#{bm('', 'variant-#{$variant}')} {
+					@include meta.apply(map.get($mixins, $phase), $self);
+				}
+			}
+		}
+	} @else {
+		@error 'Please include $self as an argument.';
+	}
+}
+
+@mixin check-phases($mixins) {
+	@each $found in map.keys($mixins) {
+		@if $found != states and not list.index($phases, $found) {
+			@error 'Unknown phase `#{$found}`. Allowed phases: #{$phases}.';
+		}
+	}
+}

@@ -1,0 +1,43 @@
+---
+import Layout from '@widgets/layout'
+import { colorSchemes, defaultTheme, themeNames } from '@styles/themes.ts'
+import {
+	components,
+	findEntry,
+	previewProps,
+	samplesOf,
+	utilities,
+} from '../_lib/docs.ts'
+
+export function getStaticPaths() {
+	return components.map(entry => ({ params: { id: entry.id } }))
+}
+
+const entry = findEntry(Astro.params.id)
+if (!entry) {
+	throw new Error(`Unknown component: ${Astro.params.id}`)
+}
+
+const { default: Component } = await entry.component()
+const samples = await samplesOf(entry)
+const query = Astro.url.searchParams
+const sample = samples[query.get('sample') ?? ''] ?? Object.values(samples)[0] ?? {}
+const props = previewProps(entry, sample, query.get('props'))
+const theme = query.get('theme') ?? defaultTheme
+const scheme = query.get('scheme') ?? ''
+const styles = query.has('props') ? await utilities(props) : ''
+---
+
+<Layout
+	seo={{ title: `${entry.title} preview` }}
+	class:list={[
+		themeNames.includes(theme) && `theme-${theme}`,
+		colorSchemes.includes(scheme) && `scheme-${scheme}`,
+	]}>
+	<Fragment slot="header" />
+	<Fragment slot="footer" />
+	{styles && <Fragment set:html={`<style>${styles}</style>`} />}
+	<div class:list={['flow-root', !entry.full && 'p-6']}>
+		<Component {...props} />
+	</div>
+</Layout>

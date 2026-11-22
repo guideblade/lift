@@ -1,0 +1,57 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { type BaseProps, deriveName } from '@libs/astro'
+import { createBlock } from '@libs/bem'
+import { componentAttributes } from '@libs/attributes'
+import type { FormSimpleRadioContent } from '../model/form-simple-radio'
+
+const component = createBlock(deriveName(Astro.self))
+
+type Props = BaseProps & Omit<HTMLAttributes<'label'>, 'class'> & FormSimpleRadioContent
+
+const {
+	variant = 'primary',
+	class: className,
+	sampleSlots,
+	hover,
+	hoverSource,
+	...props
+} = Astro.props as Props
+const SampleRadio = sampleSlots?.radio
+const SampleDefault = sampleSlots?.default
+---
+
+<label
+	{...componentAttributes(component.block, { hover, hoverSource })}
+	{...props}
+	class:list={[component.block, component.variant(variant), className]}>
+	<span class:list={component.element('backdrop')}></span>
+	<span class:list={component.element('control')}>
+		<slot name="radio">{SampleRadio && <SampleRadio />}</slot>
+	</span>
+	<slot>{SampleDefault && <SampleDefault />}</slot>
+</label>
+
+<style lang="scss">
+	@use '@styles/tools.scss' as *;
+	@use './form-simple-radio.scss' as *;
+	@use 'block:name' as block;
+
+	$name: block.$name;
+
+	@layer block {
+		.#{$name} {
+			$self: &;
+
+			@include cq(small) {
+				@include small($self);
+			}
+			@include cq(medium) {
+				@include medium($self);
+			}
+			@include cq(large) {
+				@include large($self);
+			}
+		}
+	}
+</style>

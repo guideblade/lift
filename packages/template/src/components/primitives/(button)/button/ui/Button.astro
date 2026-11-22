@@ -1,0 +1,69 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { type BaseProps, deriveName } from '@libs/astro'
+import { createBlock } from '@libs/bem'
+import Text from '@primitives/text'
+import { componentAttributes } from '@libs/attributes'
+
+const component = createBlock(deriveName(Astro.self))
+
+type Props = BaseProps<'secondary'> &
+	Omit<HTMLAttributes<'button'>, 'class'> & {
+		tag?: 'button' | 'div' | 'span'
+		text: string
+		isSelected?: boolean
+	}
+
+const {
+	tag: Tag = 'button',
+	text,
+	variant = 'primary',
+	isSelected = false,
+	class: className,
+	hover,
+	hoverSource,
+	...props
+} = Astro.props as Props
+---
+
+<Tag
+	{...componentAttributes(component.block, { hover, hoverSource })}
+	type={Tag === 'button' ? 'button' : undefined}
+	{...props}
+	class:list={[
+		component.block,
+		component.variant(variant),
+		isSelected && component.state('selected'),
+		className,
+	]}>
+	<span class={component.element('inner')}>
+		<Text tag="span" text={text} />
+	</span>
+</Tag>
+
+<style lang="scss">
+	@use '@styles/tools.scss' as *;
+
+	@use './button.scss' as *;
+	@use 'block:name' as block;
+
+	$name: block.$name;
+
+	@layer primitive {
+		.#{$name} {
+			$self: &;
+
+			@include cq(small) {
+				@include small($self);
+			}
+
+			@include cq(medium) {
+				@include medium($self);
+			}
+
+			@include cq(large) {
+				@include large($self);
+			}
+		}
+	}
+</style>

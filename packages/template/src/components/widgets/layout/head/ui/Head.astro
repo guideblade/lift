@@ -1,0 +1,86 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { type BaseProps, deriveName } from '@libs/astro'
+import { createBlock } from '@libs/bem'
+import { Font } from 'astro:assets'
+import { componentAttributes, DataAttribute } from '@libs/attributes'
+import { withBase } from '@libs/url'
+import layers from '@styles/layers.css?raw'
+import Seo, { type SeoProps } from '../../lib/Seo.astro'
+
+const component = createBlock(deriveName(Astro.self))
+
+type Props = BaseProps &
+	Omit<HTMLAttributes<'head'>, 'class'> & {
+		seo?: SeoProps
+	}
+
+const {
+	seo = {},
+	variant = 'primary',
+	class: className,
+	hover,
+	hoverSource,
+	...props
+} = Astro.props as Props
+
+const faviconEnvironment =
+	import.meta.env.__FAVICON_ENV__ ??
+	(import.meta.env.DEV ? 'development' : import.meta.env.MODE)
+
+const faviconByEnvironment: Record<string, string> = {
+	development: 'favicon-dev.svg',
+	preview: 'favicon-preview.svg',
+	production: 'favicon.svg',
+}
+
+const favicon = withBase(
+	faviconByEnvironment[faviconEnvironment] ?? faviconByEnvironment.production,
+)
+---
+
+<head
+	{...componentAttributes(component.block, { hover, hoverSource })}
+	{...props}
+	class:list={[component.block, component.variant(variant), className]}>
+	<meta charset="utf-8" />
+	<Fragment set:html={`<style>${layers}</style>`} />
+	<Font cssVariable="--font-cal-sans" />
+	<Font cssVariable="--font-inter" />
+	<Font cssVariable="--font-faculty-glyphic" />
+	<Font cssVariable="--font-jetbrains-mono" />
+	<script is:inline define:vars={{ attribute: DataAttribute.documentJs }}>
+		document.documentElement.setAttribute(attribute, '')
+	</script>
+	<link rel="icon" type="image/svg+xml" href={favicon} />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="generator" content={Astro.generator} />
+	<Seo {...seo} />
+</head>
+
+<style lang="scss">
+	@use '@styles/tools.scss' as *;
+
+	@use './head.scss' as *;
+	@use 'block:name' as block;
+
+	$name: block.$name;
+
+	@layer widget {
+		.#{$name} {
+			$self: &;
+
+			@include cq(small) {
+				@include small($self);
+			}
+
+			@include cq(medium) {
+				@include medium($self);
+			}
+
+			@include cq(large) {
+				@include large($self);
+			}
+		}
+	}
+</style>

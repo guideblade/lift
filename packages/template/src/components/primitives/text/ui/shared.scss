@@ -1,0 +1,18 @@
+@use '@styles/tools.scss' as *;
+@use './mixins';
+@use '../_generated/variants' as generated;
+
+@mixin small($self) {
+	@include mixins.apply-form($self, generated.$forms);
+	@include mixins.apply-properties;
+}
+
+@mixin medium($self) {
+	@include mixins.apply-form($self, generated.$forms);
+	@include mixins.apply-properties;
+}
+
+@mixin large($self) {
+	@include mixins.apply-form($self, generated.$forms);
+	@include mixins.apply-properties;
+}

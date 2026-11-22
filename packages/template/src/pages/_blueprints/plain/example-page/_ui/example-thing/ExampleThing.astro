@@ -1,0 +1,39 @@
+---
+import { deriveName } from '@libs/astro'
+import { componentAttributes, originAttributes } from '@libs/attributes'
+import { createBlock } from '@libs/bem'
+import { page } from '../../_page.ts'
+
+const component = createBlock(deriveName(Astro.self))
+---
+
+<section
+	{...componentAttributes(component.block)}
+	{...originAttributes(page.id)}
+	class={component.block}></section>
+
+<style lang="scss">
+	@use 'sass:meta';
+	@use '@styles/tools.scss' as *;
+	@use './example-thing.scss' as styles;
+	@use 'block:name' as block;
+
+	$name: block.$name;
+	$styles: meta.module-mixins('styles');
+
+	@layer page {
+		.#{$name} {
+			$self: &;
+
+			@include cq(small) {
+				@include phase(small, $self, $name, (), $styles);
+			}
+			@include cq(medium) {
+				@include phase(medium, $self, $name, (), $styles);
+			}
+			@include cq(large) {
+				@include phase(large, $self, $name, (), $styles);
+			}
+		}
+	}
+</style>

@@ -1,0 +1,25 @@
+@use '@styles/tools.scss' as *;
+
+@mixin small($self) {
+	width: fit-content;
+
+	& > :global(li) {
+		display: grid;
+		grid-template-columns: pxr(32px) 1fr;
+		gap: pxr(12px);
+		color: color(symbol);
+
+		&:not(:first-of-type) {
+			margin-top: pxr(4px);
+		}
+
+		&::before {
+			place-self: center center;
+			width: pxr(8px);
+			height: pxr(8px);
+			background-color: color(symbol);
+			border-radius: 8px;
+			content: '';
+		}
+	}
+}

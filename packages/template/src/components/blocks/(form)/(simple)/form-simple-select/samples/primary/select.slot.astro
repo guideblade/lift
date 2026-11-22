@@ -1,0 +1,16 @@
+---
+import Select from '@primitives/select'
+import Option from '@primitives/option'
+import Optgroup from '@primitives/optgroup'
+---
+
+<Select variant="secondary" name="region">
+	<Option variant="tertiary" value="" label="Select a region" disabled selected />
+	<Optgroup variant="tertiary" label="Americas">
+		<Option variant="tertiary" value="us-east" label="US East" />
+		<Option variant="tertiary" value="us-west" label="US West" />
+	</Optgroup>
+	<Optgroup variant="tertiary" label="Europe">
+		<Option variant="tertiary" value="eu-central" label="EU Central" />
+	</Optgroup>
+</Select>

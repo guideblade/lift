@@ -1,0 +1,72 @@
+[data-docs-app] {
+	--tron-cyan: #00dcff;
+	--tron-glow: color-mix(in srgb, var(--tron-cyan) 35%, transparent);
+	--color-white: #f2feff;
+	--color-neutral-50: #eafcff;
+	--color-neutral-100: #d4f6ff;
+	--color-neutral-200: #aeeaf6;
+	--color-neutral-300: #93d6e5;
+	--color-neutral-400: #62a3b6;
+	--color-neutral-500: #3f7386;
+	--color-neutral-600: #2b5465;
+	--color-neutral-700: #1c3b4a;
+	--color-neutral-800: #112735;
+	--color-neutral-900: #071420;
+	--color-neutral-950: #02080f;
+	--color-sky-200: #b9fbff;
+	--color-sky-300: #7ef6ff;
+	--color-sky-400: #3eefff;
+	--color-sky-500: #00dcff;
+	--color-sky-600: #00b4d8;
+	--color-sky-700: #008fb0;
+	--color-emerald-300: #8ffff0;
+	--color-emerald-400: #4dffe6;
+	--color-emerald-500: #00f0d0;
+	--color-rose-300: #ff8aa8;
+	--color-rose-400: #ff5c86;
+	--color-rose-500: #ff3d6e;
+	background-image:
+		linear-gradient(
+			color-mix(in srgb, var(--tron-cyan) 4%, transparent) 1px,
+			transparent 1px
+		),
+		linear-gradient(
+			90deg,
+			color-mix(in srgb, var(--tron-cyan) 4%, transparent) 1px,
+			transparent 1px
+		);
+	background-size: 40px 40px;
+}
+
+[data-docs-nav] {
+	background:
+		url('./well.svg') left top / 240px 1440px repeat-y,
+		var(--color-neutral-950);
+	box-shadow:
+		1px 0 0 color-mix(in srgb, var(--tron-cyan) 45%, transparent),
+		6px 0 24px -12px var(--tron-glow);
+}
+
+[data-docs-nav] summary {
+	text-shadow: 0 0 8px var(--tron-glow);
+	color: color-mix(in srgb, var(--tron-cyan) 70%, transparent);
+}
+
+[data-docs-app] [aria-current='page'] {
+	text-shadow: 0 0 8px var(--tron-glow);
+	box-shadow:
+		0 0 0 1px color-mix(in srgb, var(--tron-cyan) 40%, transparent),
+		0 0 12px -2px var(--tron-glow);
+}
+
+[data-docs-app] h1 {
+	text-shadow:
+		0 0 6px var(--tron-glow),
+		0 0 22px var(--tron-glow);
+}
+
+[data-docs-app] :is(input, select, textarea):focus {
+	box-shadow:
+		0 0 0 1px var(--tron-cyan),
+		0 0 14px var(--tron-glow);
+}

@@ -1,0 +1,51 @@
+.levels {
+	margin: 32px 0;
+	border-top: 1px solid var(--vp-c-divider);
+	padding-top: 16px;
+
+	a {
+		color: var(--vp-c-brand-1);
+		text-decoration: none;
+	}
+
+	&.is-before {
+		margin: 0 0 32px;
+		border-top: none;
+		border-bottom: 1px solid var(--vp-c-divider);
+		padding: 0 0 16px;
+	}
+}
+
+.levels-heading {
+	margin: 16px 0 8px;
+	font-size: 20px;
+	font-weight: 600;
+}
+
+.levels-title {
+	margin: 16px 0 4px;
+	font-size: 17px;
+	font-weight: 600;
+}
+
+.levels-description,
+.levels-note {
+	margin: 4px 0;
+	color: var(--vp-c-text-2);
+	font-size: 14px;
+}
+
+.levels-level {
+	margin: 12px 0;
+	border-left: 2px solid var(--vp-c-divider);
+	padding-left: 16px;
+}
+
+.levels-where {
+	font-family: var(--vp-font-family-mono);
+	font-size: 12px;
+}
+
+.levels-body {
+	font-size: 14px;
+}

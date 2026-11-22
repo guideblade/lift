@@ -1,0 +1,244 @@
+@use '@styles/tools.scss' as *;
+
+.docs-workspace {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	min-width: 0;
+	min-height: 0;
+}
+
+.docs-stage {
+	width: 100%;
+}
+
+.docs-canvas {
+	scrollbar-color: auto;
+	scrollbar-width: auto;
+}
+
+.docs-canvas::-webkit-scrollbar {
+	width: 12px;
+	height: 12px;
+}
+
+.docs-canvas::-webkit-scrollbar-track {
+	background: var(--color-neutral-900);
+}
+
+.docs-canvas::-webkit-scrollbar-thumb {
+	background: var(--color-neutral-600);
+	border: 3px solid var(--color-neutral-900);
+	border-radius: 6px;
+}
+
+.docs-inspector {
+	display: flex;
+	overflow: hidden;
+	flex: 0 0 clamp(8rem, var(--docs-panel-bottom, 38%), 65%);
+	flex-direction: column;
+	min-width: 0;
+	min-height: 0;
+	background: var(--color-neutral-950);
+}
+
+.docs-divider {
+	position: relative;
+	z-index: 10;
+	flex-shrink: 0;
+	height: 1px;
+	background: var(--color-neutral-800);
+	outline: none;
+	cursor: row-resize;
+	touch-action: none;
+}
+
+.docs-divider::before {
+	position: absolute;
+	inset: -5px 0;
+	content: '';
+}
+
+.docs-divider:focus-visible,
+[data-dragging] .docs-divider {
+	background: var(--tron-cyan);
+}
+
+.docs-drawer {
+	position: fixed;
+	top: var(--docs-nav-bottom, 3.5rem);
+	left: 0;
+	overflow: auto;
+	flex-direction: column;
+	width: 100%;
+	max-width: none;
+	max-height: calc(100dvh - var(--docs-nav-bottom, 3.5rem));
+	margin: 0;
+	padding: 0;
+	color: var(--color-neutral-300);
+	background: var(--color-neutral-950);
+	border: 0;
+	box-shadow: 0 20px 50px #000000aa;
+	border-bottom: 1px solid var(--color-sky-700);
+}
+
+.docs-drawer:popover-open {
+	display: flex;
+}
+
+.docs-share {
+	display: none;
+}
+
+.docs-share-card {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+	min-width: 0;
+	padding: 1rem;
+}
+
+.docs-share-panel {
+	position: fixed;
+	inset: auto 0 0;
+	overflow: auto;
+	width: 100%;
+	max-width: 32rem;
+	max-height: 85dvh;
+	margin: 0 auto;
+	padding: 0;
+	color: var(--color-neutral-300);
+	background: var(--color-neutral-950);
+	border: 1px solid var(--color-sky-700);
+	border-radius: 1rem 1rem 0 0;
+}
+
+.docs-qr {
+	position: relative;
+	align-self: center;
+	width: min(100%, 12rem);
+	padding: 0.5rem;
+	background: #02080f;
+	border: 1px solid var(--color-sky-700);
+	border-radius: 0.5rem;
+	box-shadow: 0 0 24px -8px var(--tron-glow);
+}
+
+.docs-qr::before,
+.docs-qr::after {
+	position: absolute;
+	inset: -3px;
+	border: 2px solid var(--tron-cyan);
+	border-radius: 0.5rem;
+	clip-path: polygon(0 0, 18% 0, 18% 2%, 2% 2%, 2% 18%, 0 18%);
+	content: '';
+}
+
+.docs-qr::after {
+	transform: rotate(180deg);
+}
+
+.docs-qr img {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+.docs-share-arrow {
+	display: grid;
+	place-items: center;
+	width: 1.75rem;
+	height: 1.75rem;
+	color: var(--color-sky-300);
+	border: 1px solid var(--color-neutral-700);
+	border-radius: 0.25rem;
+}
+
+.docs-share-arrow:disabled {
+	opacity: 0.3;
+}
+
+@media (width < #{breakpoint(large)}) {
+	.docs-toolbar > :first-child {
+		flex-basis: 100%;
+	}
+
+	.docs-toolbar code,
+	.docs-toolbar [title='Open in editor'] {
+		max-width: 65vw;
+		font-size: 0.625rem;
+	}
+}
+
+@include mq(large) {
+	.docs-stage {
+		width: var(--docs-frame-width, 100%);
+		max-width: none;
+		margin-inline: auto;
+	}
+
+	.docs-drawer {
+		position: static;
+		display: flex;
+		overflow: hidden;
+		flex: 1;
+		min-height: 0;
+		max-height: none;
+		background: transparent;
+		border: 0;
+		box-shadow: none;
+	}
+
+	.docs-share {
+		display: block;
+		overflow: auto;
+		flex-shrink: 0;
+		border-top: 1px solid var(--color-neutral-800);
+	}
+
+	.docs-share-card {
+		display: grid;
+		grid-template-columns: 8rem minmax(0, 1fr);
+		gap: 0.75rem 1rem;
+	}
+
+	.docs-share-card > :first-child {
+		grid-column: 1 / -1;
+	}
+
+	[data-panel='right'] .docs-workspace {
+		flex-direction: row;
+	}
+
+	[data-panel='right'] .docs-inspector {
+		flex-basis: clamp(17.5rem, var(--docs-panel-right, 30rem), 70%);
+	}
+
+	[data-panel='right'] .docs-divider {
+		width: 1px;
+		height: auto;
+		cursor: col-resize;
+	}
+
+	[data-panel='right'] .docs-divider::before {
+		inset: 0 -5px;
+	}
+
+	[data-panel='bottom'] .docs-inspector {
+		flex-direction: row;
+	}
+
+	[data-panel='bottom'] .docs-share {
+		flex-basis: 15rem;
+		border-left: 1px solid var(--color-neutral-800);
+		border-top: 0;
+	}
+
+	[data-panel='bottom'] .docs-share-card {
+		display: flex;
+	}
+
+	[data-panel='bottom'] .docs-qr {
+		width: min(100%, 10rem);
+	}
+}

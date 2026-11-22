@@ -1,0 +1,55 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { type BaseProps, deriveName } from '@libs/astro'
+import { createBlock } from '@libs/bem'
+import type { SectionContent } from '../model/section'
+import { componentAttributes } from '@libs/attributes'
+
+const component = createBlock(deriveName(Astro.self))
+
+type Props = BaseProps & Omit<HTMLAttributes<'section'>, 'class'> & SectionContent
+
+const {
+	class: className,
+	variant = 'primary',
+	sampleSlots,
+	hover,
+	hoverSource,
+	...props
+} = Astro.props as Props
+const SampleDefault = sampleSlots?.default
+---
+
+<section
+	{...componentAttributes(component.block, { hover, hoverSource })}
+	{...props}
+	class:list={[component.block, component.variant(variant), className]}>
+	<div class={component.element('inner')}>
+		<slot>{SampleDefault && <SampleDefault />}</slot>
+	</div>
+</section>
+
+<style lang="scss">
+	@use '@styles/tools.scss' as *;
+
+	@use './section.scss' as *;
+	@use 'block:name' as block;
+
+	$name: block.$name;
+
+	@layer primitive {
+		.#{$name} {
+			$self: &;
+
+			@include cq(small) {
+				@include small($self);
+			}
+			@include cq(medium) {
+				@include medium($self);
+			}
+			@include cq(large) {
+				@include large($self);
+			}
+		}
+	}
+</style>

@@ -1,0 +1,20 @@
+---
+import Fieldset from '@primitives/fieldset'
+import Legend from '@primitives/legend'
+import Radio from '@blocks/radio'
+import Text from '@primitives/text'
+---
+
+<Fieldset variant="secondary">
+	<Legend variant="secondary">
+		<Text tag="span" text="Release channel" />
+	</Legend>
+	<label>
+		<Radio variant="secondary" name="docs-channel" value="stable" checked />
+		<Text tag="span" text="Stable" />
+	</label>
+	<label>
+		<Radio variant="secondary" name="docs-channel" value="canary" />
+		<Text tag="span" text="Canary" />
+	</label>
+</Fieldset>

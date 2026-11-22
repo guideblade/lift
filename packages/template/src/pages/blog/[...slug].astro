@@ -1,0 +1,168 @@
+---
+import Layout from '@widgets/layout'
+import PageSection from '@primitives/section'
+import { getCollection, render, type CollectionEntry } from 'astro:content'
+
+export async function getStaticPaths() {
+	const posts = await getCollection('blog')
+	return posts.map((post: CollectionEntry<'blog'>) => ({
+		params: { slug: post.id },
+		props: { post },
+	}))
+}
+
+type Props = {
+	post: CollectionEntry<'blog'>
+}
+
+const { post } = Astro.props
+const { Content } = await render(post)
+---
+
+<Layout>
+	<PageSection>
+		<article class="post">
+			<Content />
+		</article>
+	</PageSection>
+</Layout>
+
+<style lang="scss">
+	@use '@styles/tools.scss' as *;
+
+	.post {
+		--post-mono: var(--font-jetbrains-mono, ui-monospace, monospace);
+		--post-muted: color-mix(in srgb, #{color(symbol)} 65%, transparent);
+		--post-line: #{color(decorator-100)};
+		--post-code: #{color(surface-100)};
+		max-width: 42rem;
+		margin-inline: auto;
+		padding-block: 3rem;
+		font-family: var(--font-inter);
+		font-size: 1.0625rem;
+		line-height: 1.7;
+
+		:global(:is(h1, h2, h3, h4)) {
+			margin-block: 2.2em 0.6em;
+			font-family: var(--font-cal-sans);
+			font-weight: 600;
+			line-height: 1.2;
+		}
+
+		:global(h1) {
+			margin-block-start: 0;
+			font-size: 2.5rem;
+		}
+
+		:global(h2) {
+			font-size: 1.75rem;
+		}
+
+		:global(h3) {
+			font-size: 1.35rem;
+		}
+
+		:global(h4) {
+			font-size: 1.1rem;
+		}
+
+		:global(:is(p, ul, ol, blockquote, pre, table)) {
+			margin-block: 0 1.1em;
+		}
+
+		:global(a) {
+			text-decoration: underline;
+			text-underline-offset: 0.2em;
+		}
+
+		:global(:is(ul, ol)) {
+			padding-inline-start: 1.5em;
+		}
+
+		:global(ul) {
+			list-style: disc;
+		}
+
+		:global(ol) {
+			list-style: decimal;
+		}
+
+		:global(li) {
+			margin-block: 0.25em;
+		}
+
+		:global(li > :is(ul, ol)) {
+			margin-block: 0.25em 0;
+		}
+
+		:global(.contains-task-list) {
+			list-style: none;
+			padding-inline-start: 0;
+		}
+
+		:global(.task-list-item input) {
+			margin-inline-end: 0.5em;
+		}
+
+		:global(blockquote) {
+			padding-inline-start: 1em;
+			color: var(--post-muted);
+			border-inline-start: 3px solid var(--post-line);
+		}
+
+		:global(code) {
+			padding: 0.1em 0.35em;
+			font-family: var(--post-mono);
+			font-size: 0.88em;
+			background-color: var(--post-code);
+			border-radius: 0.3em;
+		}
+
+		:global(pre) {
+			overflow-x: auto;
+			padding: 1em 1.2em;
+			font-size: 0.9rem;
+			line-height: 1.55;
+			border-radius: 0.5em;
+		}
+
+		:global(pre code) {
+			padding: 0;
+			font-size: inherit;
+			background-color: transparent;
+		}
+
+		:global(table) {
+			width: 100%;
+			border-collapse: collapse;
+		}
+
+		:global(:is(th, td)) {
+			padding: 0.5em 0.75em;
+			text-align: start;
+			border-block-end: 1px solid var(--post-line);
+		}
+
+		:global(th) {
+			font-weight: 600;
+		}
+
+		:global(hr) {
+			margin-block: 2.5em;
+			border: 0;
+			border-block-start: 1px solid var(--post-line);
+		}
+
+		:global(sup) {
+			font-size: 0.75em;
+		}
+
+		:global(.footnotes) {
+			margin-block-start: 3em;
+			padding-block-start: 1em;
+			font-size: 0.9rem;
+			color: var(--post-muted);
+			border-block-start: 1px solid var(--post-line);
+		}
+	}
+</style>

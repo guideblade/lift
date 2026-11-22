@@ -1,0 +1,15 @@
+@use '@styles/tools.scss' as *;
+
+@mixin small($self) {
+	font: inherit;
+	color: var(--input-color);
+	caret-color: var(--input-caret-color);
+
+	&[list]::-webkit-calendar-picker-indicator {
+		width: 0;
+		margin: 0;
+		padding: 0;
+		opacity: 0;
+		pointer-events: none;
+	}
+}

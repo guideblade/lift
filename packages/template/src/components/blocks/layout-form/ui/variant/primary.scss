@@ -1,0 +1,6 @@
+@use '@styles/tools.scss' as *;
+
+@mixin small($self) {
+	--layout-form-gap: #{pxr(20px)};
+	gap: var(--layout-form-gap);
+}

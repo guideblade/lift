@@ -1,0 +1,22 @@
+@use 'sass:map';
+@use './themes/mono';
+
+@mixin theme($name, $colors) {
+	$selector: '.theme-#{$name}';
+
+	@if $name == mono {
+		$selector: ':where(:root), #{$selector}';
+	}
+
+	@layer base {
+		#{$selector} {
+			color: var(--color-symbol);
+			background-color: var(--color-surface);
+
+			@each $token, $value in map.merge(mono.$colors, $colors) {
+				--color-#{$name}-#{$token}: #{$value};
+				--color-#{$token}: var(--color-#{$name}-#{$token});
+			}
+		}
+	}
+}

@@ -1,0 +1,16 @@
+---
+import UnorderedList from '@blocks/unordered-list'
+import Text from '@primitives/text'
+
+const items = ['Light', 'AI ready', 'Modifiable', 'Opinionated']
+---
+
+<div class:list={['mt-12']}>
+	<UnorderedList>
+		{items.map(item => (
+			<li>
+				<Text tag="span" text={item} />
+			</li>
+		))}
+	</UnorderedList>
+</div>

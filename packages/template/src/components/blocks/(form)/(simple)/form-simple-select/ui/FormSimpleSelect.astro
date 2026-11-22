@@ -1,0 +1,55 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { type BaseProps, deriveName } from '@libs/astro'
+import { createBlock } from '@libs/bem'
+import { componentAttributes } from '@libs/attributes'
+import type { FormSimpleSelectContent } from '../model/form-simple-select'
+
+const component = createBlock(deriveName(Astro.self))
+
+type Props = BaseProps & Omit<HTMLAttributes<'div'>, 'class'> & FormSimpleSelectContent
+
+const {
+	variant = 'primary',
+	class: className,
+	sampleSlots,
+	hover,
+	hoverSource,
+	...props
+} = Astro.props as Props
+const SampleSelect = sampleSlots?.select
+---
+
+<div
+	{...componentAttributes(component.block, { hover, hoverSource })}
+	{...props}
+	class:list={[component.block, component.variant(variant), className]}>
+	<div class:list={component.element('backdrop')}></div>
+	<div class:list={component.element('select')}>
+		<slot name="select">{SampleSelect && <SampleSelect />}</slot>
+	</div>
+</div>
+
+<style lang="scss">
+	@use '@styles/tools.scss' as *;
+	@use './form-simple-select.scss' as *;
+	@use 'block:name' as block;
+
+	$name: block.$name;
+
+	@layer block {
+		.#{$name} {
+			$self: &;
+
+			@include cq(small) {
+				@include small($self);
+			}
+			@include cq(medium) {
+				@include medium($self);
+			}
+			@include cq(large) {
+				@include large($self);
+			}
+		}
+	}
+</style>

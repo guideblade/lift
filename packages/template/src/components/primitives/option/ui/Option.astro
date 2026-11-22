@@ -1,0 +1,60 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { type BaseProps, deriveName } from '@libs/astro'
+import { createBlock } from '@libs/bem'
+import { componentAttributes } from '@libs/attributes'
+
+const component = createBlock(deriveName(Astro.self))
+
+type Props = BaseProps<'secondary' | 'tertiary'> &
+	Omit<HTMLAttributes<'option'>, 'class'> & {
+		value?: string | number
+		selected?: boolean
+		disabled?: boolean
+	}
+
+const {
+	variant = 'primary',
+	value = '',
+	selected = false,
+	disabled = false,
+	class: className,
+	hover,
+	hoverSource,
+	...props
+} = Astro.props as Props
+---
+
+<option
+	{...componentAttributes(component.block, { hover, hoverSource })}
+	value={value}
+	selected={selected}
+	disabled={disabled}
+	{...props}
+	class:list={[component.block, component.variant(variant), className]}>
+	<slot />
+</option>
+
+<style lang="scss">
+	@use '@styles/tools.scss' as *;
+	@use './option.scss' as *;
+	@use 'block:name' as block;
+
+	$name: block.$name;
+
+	@layer primitive {
+		.#{$name} {
+			$self: &;
+
+			@include cq(small) {
+				@include small($self);
+			}
+			@include cq(medium) {
+				@include medium($self);
+			}
+			@include cq(large) {
+				@include large($self);
+			}
+		}
+	}
+</style>

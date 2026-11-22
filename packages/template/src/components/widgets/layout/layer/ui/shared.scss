@@ -1,0 +1,15 @@
+@use '@styles/tools.scss' as *;
+
+@mixin small($self) {
+	display: grid;
+	grid-template-areas: 'pinned';
+	align-items: start;
+	pointer-events: none;
+
+	@at-root :global(:where(#{$self} > *)) {
+		position: sticky;
+		top: 0;
+		grid-area: pinned;
+		pointer-events: auto;
+	}
+}

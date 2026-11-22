@@ -1,0 +1,56 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { type BaseProps, deriveName } from '@libs/astro'
+import { createBlock } from '@libs/bem'
+import { componentAttributes, instanceAttributes } from '@libs/attributes'
+import { elementTag } from '@libs/instance'
+
+const component = createBlock(deriveName(Astro.self))
+const Tag = elementTag(component.block)
+
+type Props = BaseProps & Omit<HTMLAttributes<'div'>, 'class'>
+
+const {
+	variant = 'primary',
+	class: className,
+	hover,
+	hoverSource,
+	...props
+} = Astro.props as Props
+---
+
+<Tag
+	{...componentAttributes(component.block, { hover, hoverSource })}
+	{...instanceAttributes(component.block)}
+	{...props}
+	class:list={[component.block, component.variant(variant), className]}>
+	<slot />
+</Tag>
+
+<script>
+	import '../InstanceComponent'
+</script>
+
+<style lang="scss">
+	@use '@styles/tools.scss' as *;
+	@use './component.scss' as *;
+	@use 'block:name' as block;
+
+	$name: block.$name;
+
+	@layer primitive {
+		.#{$name} {
+			$self: &;
+
+			@include cq(small) {
+				@include small($self);
+			}
+			@include cq(medium) {
+				@include medium($self);
+			}
+			@include cq(large) {
+				@include large($self);
+			}
+		}
+	}
+</style>

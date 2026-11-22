@@ -1,0 +1,52 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { type BaseProps, deriveName } from '@libs/astro'
+import { createBlock } from '@libs/bem'
+import { componentAttributes } from '@libs/attributes'
+import type { FormSimpleLegendContent } from '../model/form-simple-legend'
+
+const component = createBlock(deriveName(Astro.self))
+
+type Props = BaseProps & Omit<HTMLAttributes<'div'>, 'class'> & FormSimpleLegendContent
+
+const {
+	variant = 'primary',
+	class: className,
+	sampleSlots,
+	hover,
+	hoverSource,
+	...props
+} = Astro.props as Props
+const SampleLegend = sampleSlots?.legend
+---
+
+<div
+	{...componentAttributes(component.block, { hover, hoverSource })}
+	{...props}
+	class:list={[component.block, component.variant(variant), className]}>
+	<slot name="legend">{SampleLegend && <SampleLegend />}</slot>
+</div>
+
+<style lang="scss">
+	@use '@styles/tools.scss' as *;
+	@use './form-simple-legend.scss' as *;
+	@use 'block:name' as block;
+
+	$name: block.$name;
+
+	@layer block {
+		.#{$name} {
+			$self: &;
+
+			@include cq(small) {
+				@include small($self);
+			}
+			@include cq(medium) {
+				@include medium($self);
+			}
+			@include cq(large) {
+				@include large($self);
+			}
+		}
+	}
+</style>

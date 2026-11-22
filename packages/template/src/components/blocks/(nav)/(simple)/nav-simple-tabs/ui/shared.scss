@@ -1,0 +1,68 @@
+@use '@styles/tools.scss' as *;
+@mixin small($self) {
+	display: flex;
+	flex-direction: column;
+	gap: var(--nav-simple-tabs-gap, pxr(16px));
+	min-width: 0;
+
+	&[data-orientation='vertical'] {
+		flex-direction: row;
+		align-items: flex-start;
+	}
+
+	#{be($self, 'list')} {
+		position: relative;
+		display: flex;
+		overflow-x: auto;
+		flex-shrink: 0;
+		max-width: 100%;
+		scrollbar-width: none;
+
+		&[data-orientation='vertical'] {
+			overflow: visible;
+			flex-direction: column;
+		}
+	}
+
+	#{be($self, 'trigger')} {
+		position: relative;
+		z-index: 1;
+		flex-shrink: 0;
+		font: inherit;
+		white-space: nowrap;
+		color: inherit;
+		background: none;
+		border: none;
+		outline: none;
+		cursor: default;
+
+		&:disabled {
+			opacity: 0.4;
+			cursor: not-allowed;
+		}
+	}
+
+	#{be($self, 'indicator')} {
+		z-index: 0;
+		pointer-events: none;
+
+		&[hidden] {
+			display: none;
+		}
+	}
+
+	#{be($self, 'panel')} {
+		flex-grow: 1;
+		min-width: 0;
+		outline: none;
+
+		&[hidden] {
+			display: none;
+		}
+
+		&:focus-visible {
+			outline: 2px solid var(--nav-simple-tabs-focus-color, #{color(decorator)});
+			outline-offset: 4px;
+		}
+	}
+}

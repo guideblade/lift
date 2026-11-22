@@ -1,0 +1,126 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { type BaseProps, deriveName } from '@libs/astro'
+import { createBlock } from '@libs/bem'
+import { componentAttributes } from '@libs/attributes'
+import type { HeaderNavContent } from '../model/header-nav'
+import { levelsOf, linksOf, panelsOf } from '../lib/headerNavSlots'
+import HeaderNavBar from '../lib/HeaderNavBar.vue'
+import HeaderNavMenu from '../lib/HeaderNavMenu.vue'
+
+const component = createBlock(deriveName(Astro.self))
+
+type Props = BaseProps &
+	Omit<HTMLAttributes<'header'>, 'class'> & {
+		label?: string
+		menu?: string
+		menuLabel?: string
+		backLabel?: string
+	} & HeaderNavContent
+
+const {
+	variant = 'primary',
+	start = [],
+	end = [],
+	menuItems = linksOf([...start, ...end]),
+	label = 'Main',
+	menu = 'header-nav-menu',
+	menuLabel = 'Menu',
+	backLabel = 'Back',
+	class: className,
+	sampleSlots,
+	hover,
+	hoverSource,
+	...props
+} = Astro.props as Props
+const SampleLogo = sampleSlots?.logo
+
+const fill = (kind: 'panel' | 'level', ids: string[]) =>
+	Promise.all(
+		ids.map(async id => {
+			const name = `${kind}-${id}` as const
+			return {
+				id,
+				html: Astro.slots.has(name) ? await Astro.slots.render(name) : '',
+				Sample: sampleSlots?.[name],
+			}
+		}),
+	)
+const panels = await fill('panel', panelsOf([...start, ...end]))
+const levels = await fill('level', levelsOf(menuItems))
+---
+
+<header
+	{...componentAttributes(component.block, { hover, hoverSource })}
+	{...props}
+	class:list={[component.block, component.variant(variant), className]}>
+	<HeaderNavBar
+		client:load
+		block={component.block}
+		label={label}
+		start={start}
+		end={end}>
+		<Fragment slot="logo">
+			<slot name="logo">{SampleLogo && <SampleLogo />}</slot>
+		</Fragment>
+		<Fragment slot="panels">
+			{panels.map(({ id, html, Sample }) => (
+				<div
+					class={component.element('panel')}
+					{...component.dataset({ panel: id })}
+					hidden>
+					{html ? <Fragment set:html={html} /> : Sample && <Sample />}
+				</div>
+			))}
+		</Fragment>
+		<details slot="menu" id={menu} class={component.element('disclosure')}>
+			<summary class={component.element('burger')}>{menuLabel}</summary>
+			<div class={component.element('mobile-panel')}>
+				<HeaderNavMenu
+					client:load
+					block={component.block}
+					items={menuItems}
+					backLabel={backLabel}>
+					<Fragment slot="levels">
+						{levels.map(({ id, html, Sample }) => (
+							<div
+								class={component.element('level')}
+								{...component.dataset({ level: id })}
+								hidden>
+								{html ? (
+									<Fragment set:html={html} />
+								) : (
+									Sample && <Sample />
+								)}
+							</div>
+						))}
+					</Fragment>
+				</HeaderNavMenu>
+			</div>
+		</details>
+	</HeaderNavBar>
+</header>
+
+<style lang="scss">
+	@use '@styles/tools.scss' as *;
+	@use './header-nav.scss' as *;
+	@use 'block:name' as block;
+
+	$name: block.$name;
+
+	@layer block {
+		.#{$name} {
+			$self: &;
+
+			@include cq(small) {
+				@include small($self);
+			}
+			@include cq(medium) {
+				@include medium($self);
+			}
+			@include cq(large) {
+				@include large($self);
+			}
+		}
+	}
+</style>

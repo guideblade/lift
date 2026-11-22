@@ -1,0 +1,20 @@
+@use '@styles/tools.scss' as *;
+
+@mixin small($self) {
+	display: flex;
+	flex-direction: column;
+	gap: pxr(12px);
+	align-items: flex-start;
+	padding: pxr(20px);
+	background-color: color(surface);
+	border: 1px solid color(decorator-200);
+	border-radius: 12px;
+	transition:
+		border-color $transition,
+		translate 200ms ease;
+
+	@include hover($self) {
+		border-color: color(decorator-100);
+		translate: 0 pxr(-2px);
+	}
+}

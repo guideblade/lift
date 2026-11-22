@@ -1,0 +1,61 @@
+@use '@styles/tools.scss' as *;
+@mixin small($self) {
+	display: block;
+	width: 100%;
+	padding: var(--input-padding);
+	font-size: var(--input-font-size, inherit);
+	color: var(--input-color);
+	caret-color: var(--input-color);
+	background-color: transparent;
+	border: none;
+	outline: none;
+
+	&:is(
+			[type='date'],
+			[type='datetime-local'],
+			[type='month'],
+			[type='time'],
+			[type='week']
+		):required:invalid {
+		color: var(--input-placeholder-color);
+	}
+
+	&[type='file'] {
+		cursor: default;
+	}
+
+	&::file-selector-button {
+		margin-block: var(--input-file-button-margin-block, pxr(-4px));
+		margin-inline-end: var(--input-file-button-gap, pxr(12px));
+		padding: var(--input-file-button-padding, pxr(4px) pxr(12px));
+		font: inherit;
+		font-size: var(--input-file-button-font-size, 0.875em);
+		color: var(--input-file-button-color, var(--input-color));
+		background-color: var(
+			--input-file-button-bg,
+			color-mix(in srgb, #{color(decorator-100)} 45%, transparent)
+		);
+		border: none;
+		border-radius: var(--input-file-button-radius, 8px);
+		transition: background-color var(--input-file-button-duration, 200ms) ease;
+		cursor: default;
+	}
+
+	&:focus-visible::file-selector-button {
+		box-shadow: inset 0 0 0 2px var(--input-focus-color, #{color(decorator)});
+	}
+
+	&::placeholder {
+		color: var(--input-placeholder-color);
+		opacity: 1;
+		transition: color var(--input-placeholder-duration, 0ms) ease;
+	}
+
+	&:autofill,
+	&:-webkit-autofill,
+	&:-webkit-autofill:focus {
+		background-color: transparent;
+		-webkit-box-shadow: 0 0 0 1000px transparent inset;
+		-webkit-text-fill-color: var(--input-color);
+	}
+}

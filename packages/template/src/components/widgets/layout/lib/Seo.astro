@@ -1,0 +1,70 @@
+---
+import { config } from '@config'
+import { isIndexable } from '@libs/seo'
+import { withBase } from '@libs/url'
+
+export type SeoProps = {
+	title?: string
+	description?: string
+	image?: string | null
+	canonical?: string | false
+	noindex?: boolean
+	type?: 'website' | 'article'
+	locale?: string
+	alternates?: { locale: string; path: string }[]
+}
+
+type Props = SeoProps
+
+const {
+	title,
+	description = config.site.description,
+	image = config.site.image,
+	canonical,
+	noindex = false,
+	type = 'website',
+	locale = config.site.language,
+	alternates = [],
+} = Astro.props as Props
+
+const site = Astro.site
+const fullTitle = config.site.title(title)
+const indexable = isIndexable(config.seo.indexing) && !noindex
+const canonicalUrl =
+	site && canonical !== false
+		? new URL(canonical ?? Astro.url.pathname, site).href
+		: null
+const imageUrl = site && image ? new URL(withBase(image), site).href : null
+const languages =
+	site && alternates.length > 1
+		? alternates.map(alternate => ({
+				locale: alternate.locale,
+				href: new URL(withBase(alternate.path), site).href,
+			}))
+		: []
+const hasSitemap = Boolean(import.meta.env.__SITEMAP__)
+---
+
+<title>{fullTitle}</title>
+{!indexable && <meta name="robots" content="noindex, nofollow" />}
+{config.seo.enabled && (
+	<>
+		{description && <meta name="description" content={description} />}
+		{canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+		{languages.map(language => (
+			<link rel="alternate" hreflang={language.locale} href={language.href} />
+		))}
+		{hasSitemap && <link rel="sitemap" href={withBase('sitemap-index.xml')} />}
+		<meta property="og:type" content={type} />
+		<meta property="og:site_name" content={config.site.name} />
+		<meta property="og:title" content={fullTitle} />
+		<meta property="og:locale" content={locale} />
+		{description && <meta property="og:description" content={description} />}
+		{canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
+		{imageUrl && <meta property="og:image" content={imageUrl} />}
+		<meta
+			name="twitter:card"
+			content={imageUrl ? 'summary_large_image' : 'summary'}
+		/>
+	</>
+)}

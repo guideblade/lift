@@ -1,0 +1,18 @@
+---
+import type { ComponentProps } from 'astro/types'
+import FormSimpleRadio from '@blocks/(form)/(simple)/form-simple-radio'
+import Radio from '@blocks/radio'
+
+type Props = Omit<ComponentProps<typeof Radio>, 'variant'> & {
+	variant?: ComponentProps<typeof FormSimpleRadio>['variant']
+}
+
+const { variant, class: className, ...props } = Astro.props as Props
+---
+
+<FormSimpleRadio variant={variant} class:list={[className]}>
+	<Fragment slot="radio">
+		<Radio variant="secondary" {...props} />
+	</Fragment>
+	<slot />
+</FormSimpleRadio>

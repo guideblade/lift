@@ -1,0 +1,6 @@
+@import 'tailwindcss' layer(tailwind);
+@config '../../../scripts/config/tailwind.ts';
+
+@theme {
+	--breakpoint-*: initial;
+}

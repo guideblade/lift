@@ -1,0 +1,6 @@
+@use '@styles/tools.scss' as *;
+
+@mixin small($self) {
+	display: inline-block;
+	border-radius: pxr(16px);
+}

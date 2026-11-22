@@ -1,0 +1,8 @@
+@use '@styles/tools.scss' as *;
+
+@mixin small($self) {
+	display: block;
+	font: inherit;
+	color: var(--textarea-color);
+	caret-color: var(--textarea-caret-color);
+}

@@ -1,0 +1,66 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { type BaseProps, deriveName } from '@libs/astro'
+import { createBlock } from '@libs/bem'
+import { config } from '@config'
+import Text from '@primitives/text'
+import type { FooterContent } from '../model/footer'
+import { componentAttributes } from '@libs/attributes'
+
+const component = createBlock(deriveName(Astro.self))
+
+type Props = BaseProps & Omit<HTMLAttributes<'footer'>, 'class'> & FooterContent
+
+const {
+	variant = 'primary',
+	text = `© ${new Date().getFullYear()} ${config.site.name}`,
+	links = [],
+	class: className,
+	hover,
+	hoverSource,
+	...props
+} = Astro.props as Props
+---
+
+<footer
+	{...componentAttributes(component.block, { hover, hoverSource })}
+	{...props}
+	class:list={[component.block, component.variant(variant), className]}
+	id={component.block}>
+	<div class={component.element('inner')}>
+		<Text tag="p" text={text} />
+		{links.length > 0 && (
+			<nav class={component.element('links')} aria-label="Footer">
+				{links.map(link => (
+					<a class={component.element('link')} href={link.href}>
+						{link.label}
+					</a>
+				))}
+			</nav>
+		)}
+	</div>
+</footer>
+
+<style lang="scss">
+	@use '@styles/tools.scss' as *;
+	@use './footer.scss' as *;
+	@use 'block:name' as block;
+
+	$name: block.$name;
+
+	@layer widget {
+		.#{$name} {
+			$self: &;
+
+			@include cq(small) {
+				@include small($self);
+			}
+			@include cq(medium) {
+				@include medium($self);
+			}
+			@include cq(large) {
+				@include large($self);
+			}
+		}
+	}
+</style>

@@ -1,0 +1,19 @@
+@use '@styles/tools.scss' as *;
+@mixin small($self) {
+	--checkbox-size: #{pxr(20px)};
+	--checkbox-accent-color: #{color(decorator)};
+	display: inline-flex;
+	gap: pxr(10px);
+	align-items: center;
+	font-size: pxr(15px);
+	color: #{color(symbol)};
+	cursor: default;
+	user-select: none;
+
+	#{be($self, 'control')} {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+	}
+}

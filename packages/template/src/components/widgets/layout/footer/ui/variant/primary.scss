@@ -1,0 +1,39 @@
+@use '@styles/tools.scss' as *;
+
+@mixin small($self) {
+	border-block-start: 1px solid color-mix(in srgb, #{color(decorator)} 12%, transparent);
+
+	#{be($self, 'inner')} {
+		display: flex;
+		flex-wrap: wrap;
+		gap: pxr(12px) pxr(24px);
+		align-items: center;
+		justify-content: space-between;
+		padding: pxr(24px) pxr(16px);
+		color: color-mix(in srgb, #{color(symbol)} 68%, transparent);
+	}
+
+	#{be($self, 'links')} {
+		display: flex;
+		flex-wrap: wrap;
+		gap: pxr(20px);
+	}
+
+	#{be($self, 'link')} {
+		text-decoration: underline;
+		color: inherit;
+		text-underline-offset: 0.2em;
+	}
+}
+
+@mixin medium($self) {
+	#{be($self, 'inner')} {
+		padding-inline: pxr(32px);
+	}
+}
+
+@mixin large($self) {
+	#{be($self, 'inner')} {
+		padding-inline: pxr(48px);
+	}
+}

@@ -1,0 +1,88 @@
+@use '@styles/tools.scss' as *;
+
+@mixin small($self) {
+	color-scheme: dark;
+
+	:global(.text) {
+		--text-size-120: #{pxr(80px)};
+	}
+
+	#{be($self, 'inner')} {
+		display: grid;
+		overflow: hidden;
+		grid-template-areas: 'inner';
+		height: 100svh;
+	}
+	#{be($self, 'background')} {
+		z-index: 1;
+		grid-area: inner;
+		filter: blur(4px);
+		transition: 300ms ease;
+	}
+	#{be($self, 'content')} {
+		z-index: 2;
+		grid-area: inner;
+		padding: pxr(84px) pxr(32px);
+		color: #ffffff;
+
+		h1 {
+			font-size: pxr(32px);
+			font-weight: bold;
+		}
+
+		p {
+			max-width: pxr(410px);
+			margin-top: pxr(16px);
+			font-size: pxr(16px);
+		}
+
+		a {
+			display: inline-block;
+			margin-top: pxr(36px);
+			transition: 300ms ease-in;
+
+			@include hover($self) {
+				color: #ffffffbb;
+			}
+		}
+	}
+}
+
+@mixin medium($self) {
+	#{be($self, 'content')} {
+		z-index: 2;
+		grid-area: inner;
+		padding: pxr(100px) pxr(76px);
+		color: #ffffff;
+
+		h1 {
+			font-size: pxr(64px);
+		}
+
+		p {
+			max-width: pxr(410px);
+			margin-top: pxr(32px);
+			font-size: pxr(20px);
+		}
+	}
+}
+
+@mixin large($self) {
+	#{be($self, 'background')} {
+		filter: revert;
+	}
+	#{be($self, 'content')} {
+		padding: pxr(320px) pxr(92px);
+
+		h1 {
+			max-width: pxr(964px);
+			font-size: pxr(80px);
+		}
+
+		p {
+			max-width: pxr(602px);
+			margin-top: pxr(32px);
+			font-size: pxr(24px);
+		}
+	}
+}

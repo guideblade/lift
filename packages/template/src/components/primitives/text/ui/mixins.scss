@@ -1,0 +1,55 @@
+@use 'sass:map';
+@use 'sass:meta';
+@use '@styles/tools.scss' as *;
+
+$text-properties: (
+	size: font-size,
+	font: font-family,
+	weight: font-weight,
+	style: font-style,
+	line-height: line-height,
+	letter-spacing: letter-spacing,
+	word-spacing: word-spacing,
+	color: color,
+	transform: text-transform,
+	decoration: text-decoration,
+	decoration-color: text-decoration-color,
+	decoration-style: text-decoration-style,
+	decoration-thickness: text-decoration-thickness,
+	align: text-align,
+	indent: text-indent,
+	wrap: text-wrap,
+	white-space: white-space,
+	overflow: overflow-wrap,
+	hyphens: hyphens,
+);
+
+@mixin degree($degree, $properties...) {
+	@if $degree < 10 or $degree > 1000 {
+		@error 'Text degree `#{$degree}` must be between 10 and 1000.';
+	}
+
+	@each $property, $value in meta.keywords($properties) {
+		@if not map.has-key($text-properties, $property) {
+			@error 'Unknown text property `#{$property}` for degree `#{$degree}`.';
+		}
+		/* stylelint-disable-next-line order/order */
+		--text-#{$property}-#{$degree}: #{$value};
+	}
+}
+
+@mixin apply-form($self, $forms) {
+	@each $form in $forms {
+		&[#{bd($self, form)}='#{$form}'] {
+			@each $token, $property in $text-properties {
+				--text-#{$token}: var(--text-#{$token}-#{$form});
+			}
+		}
+	}
+}
+
+@mixin apply-properties() {
+	@each $token, $property in $text-properties {
+		#{$property}: var(--text-#{$token}, revert);
+	}
+}

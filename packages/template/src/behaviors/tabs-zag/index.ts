@@ -1,0 +1,1 @@
+export { BehaviorTabsZag } from './BehaviorTabsZag'

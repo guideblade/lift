@@ -1,0 +1,14 @@
+@use 'sass:math';
+@use './config';
+
+$vw: math.div(config.$fluid-share * 1600, config.$fluid-design-width) * 1vw;
+
+@layer base {
+	html {
+		font-size: clamp(
+			100%,
+			calc(#{(1 - config.$fluid-share) * 100%} + #{$vw}),
+			#{config.$fluid-max-scale * 100%}
+		);
+	}
+}

@@ -1,0 +1,12 @@
+// This file is generated from src/components/primitives/text/ui/variant/*.scss.
+// Do not edit it manually.
+
+@use 'sass:meta';
+@use '../ui/variant/primary';
+@use '../ui/variant/secondary';
+
+$variants: (
+	primary: meta.module-mixins('primary'),
+	secondary: meta.module-mixins('secondary'),
+);
+$forms: (100, 120, 140, 160, 180, 200, 300);

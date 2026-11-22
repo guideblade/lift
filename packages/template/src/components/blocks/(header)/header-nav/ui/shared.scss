@@ -1,0 +1,80 @@
+@use '@styles/tools.scss' as *;
+
+@mixin small($self) {
+	:global(#{be($self, 'inner')}) {
+		position: relative;
+	}
+
+	:global(#{be($self, 'bar')}) {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	:global(#{be($self, 'list')}) {
+		display: none;
+	}
+
+	:global(#{be($self, 'panel')}) {
+		position: absolute;
+		inset-block-start: 100%;
+		inset-inline: 0;
+		display: none;
+		overflow-y: auto;
+		max-block-size: 80dvh;
+	}
+
+	:global(#{be($self, 'mobile-panel')}) {
+		position: absolute;
+		inset-block-start: 100%;
+		inset-inline: 0;
+		overflow-y: auto;
+		max-block-size: 70dvh;
+	}
+
+	:global(#{be($self, 'menu')}),
+	:global(#{be($self, 'level')}:not([hidden])) {
+		display: flex;
+		flex-direction: column;
+	}
+
+	:global(#{be($self, 'step')}) {
+		display: flex;
+		align-items: center;
+	}
+
+	:global(#{be($self, 'next')}) {
+		display: flex;
+		justify-content: space-between;
+		width: 100%;
+
+		&::after {
+			content: '\203A';
+		}
+	}
+}
+
+@mixin large($self) {
+	:global(#{be($self, 'bar')}) {
+		display: grid;
+		grid-template-columns: 1fr auto 1fr;
+	}
+
+	:global(#{be($self, 'list')}) {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+	}
+
+	:global(#{be($self, 'end')}) {
+		justify-content: flex-end;
+	}
+
+	:global(#{be($self, 'panel')}:not([hidden])) {
+		display: block;
+	}
+
+	:global(#{be($self, 'disclosure')}) {
+		display: none;
+	}
+}

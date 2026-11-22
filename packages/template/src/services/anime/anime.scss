@@ -1,0 +1,14 @@
+@use 'sass:list';
+@use '@styles/tools.scss' as *;
+
+$-states: (full, reduced);
+
+@mixin state($state) {
+	@if not list.index($-states, $state) {
+		@error 'Unknown anime state `#{$state}`. Expected one of: #{$-states}.';
+	} @else {
+		:root[#{data-attribute(service-anime-state)}='#{$state}'] & {
+			@content;
+		}
+	}
+}

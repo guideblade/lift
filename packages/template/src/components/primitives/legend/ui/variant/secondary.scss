@@ -1,0 +1,8 @@
+@use '@styles/tools.scss' as *;
+
+@mixin small($self) {
+	padding: 0;
+	font-size: var(--legend-font-size, pxr(14px));
+	font-weight: var(--legend-font-weight, 600);
+	color: var(--legend-color, inherit);
+}

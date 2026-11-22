@@ -1,0 +1,11 @@
+@use '@styles/tools.scss' as *;
+
+@mixin small($self) {
+	padding: pxr(10px) pxr(14px);
+	font-size: pxr(15px);
+	color: #{color(symbol)};
+
+	&:disabled {
+		color: #{color(symbol-100)};
+	}
+}

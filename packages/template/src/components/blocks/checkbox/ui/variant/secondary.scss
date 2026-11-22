@@ -1,0 +1,7 @@
+@use '@styles/tools.scss' as *;
+@mixin small($self) {
+	width: var(--checkbox-size, pxr(20px));
+	height: var(--checkbox-size, pxr(20px));
+	accent-color: var(--checkbox-accent-color, currentcolor);
+	cursor: default;
+}

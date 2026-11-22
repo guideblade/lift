@@ -1,0 +1,54 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { type BaseProps, deriveName } from '@libs/astro'
+import { createBlock } from '@libs/bem'
+import type { UnorderedListContent } from '../model/unordered-list'
+import { componentAttributes } from '@libs/attributes'
+
+const component = createBlock(deriveName(Astro.self))
+type Props = BaseProps<'secondary'> &
+	Omit<HTMLAttributes<'ul'>, 'class'> &
+	UnorderedListContent
+
+const {
+	variant = 'primary',
+	class: className,
+	sampleSlots,
+	hover,
+	hoverSource,
+	...props
+} = Astro.props as Props
+const SampleDefault = sampleSlots?.default
+---
+
+<ul
+	{...componentAttributes(component.block, { hover, hoverSource })}
+	{...props}
+	class:list={[component.block, component.variant(variant), className]}>
+	<slot>{SampleDefault && <SampleDefault />}</slot>
+</ul>
+
+<style lang="scss">
+	@use '@styles/tools.scss' as *;
+
+	@use './unordered-list.scss' as *;
+	@use 'block:name' as block;
+
+	$name: block.$name;
+
+	@layer block {
+		.#{$name} {
+			$self: &;
+
+			@include cq(small) {
+				@include small($self);
+			}
+			@include cq(medium) {
+				@include medium($self);
+			}
+			@include cq(large) {
+				@include large($self);
+			}
+		}
+	}
+</style>

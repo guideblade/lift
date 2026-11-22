@@ -1,0 +1,10 @@
+@use '@styles/tools.scss' as *;
+
+@mixin small($self) {
+	display: flex;
+	flex-direction: column;
+	gap: var(--fieldset-gap, pxr(12px));
+	margin: 0;
+	padding: 0;
+	border: none;
+}

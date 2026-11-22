@@ -1,0 +1,77 @@
+@use 'sass:list';
+@use 'sass:map';
+@use 'sass:math';
+@use 'sass:meta';
+@use '@styles/tools.scss' as *;
+@use 'config:scrollbar' as config;
+@use 'block:name' as block;
+@use './themes.scss' as themes;
+
+$name: block.$name;
+$self: '.#{$name}';
+$attribute: data-attribute(service-scrollbar);
+$scope: '[#{$attribute}]';
+$native: '[#{$attribute}="#{config.$scrollbar-native}"]';
+$state: data-attribute(service-scrollbar-state);
+$no-js: ':root:not([#{data-attribute(document-js)}])';
+$theme-keys: map.keys(map.get(themes.$themes, default));
+
+@function theme-name($key) {
+	@if not list.index($theme-keys, $key) {
+		@error 'Unknown scrollbar theme key `#{$key}`. Expected one of: #{$theme-keys}.';
+	}
+
+	@return #{$name}-#{$key};
+}
+
+@function theme($key) {
+	@return var(--#{theme-name($key)});
+}
+
+@function variable($key) {
+	@if not list.index(config.$scrollbar-variables, $key) {
+		@error 'Unknown scrollbar variable `#{$key}`. Expected one of: #{config.$scrollbar-variables}.';
+	}
+
+	@return var(--#{$name}-#{$key}, 0);
+}
+
+@function native-color() {
+	@return var(--#{$name}-color);
+}
+
+@function rail($modifier: null) {
+	@if $modifier {
+		@return bm(be($self, rail), $modifier);
+	}
+
+	@return be($self, rail);
+}
+
+@mixin state($value) {
+	@if not list.index(config.$scrollbar-states, '#{$value}') {
+		@error 'Unknown scrollbar state `#{$value}`. Expected one of: #{config.$scrollbar-states}.';
+	} @else {
+		&[#{$state}='#{$value}'] {
+			@content;
+		}
+	}
+}
+
+@function to-length($value) {
+	@if meta.type-of($value) == number and math.is-unitless($value) {
+		@return $value * 1px;
+	}
+
+	@return $value;
+}
+
+@mixin theme-properties($values) {
+	@if map.has-key($values, handle-bg) and map.has-key($values, track-bg) {
+		--#{$name}-color: #{map.get($values, handle-bg)} #{map.get($values, track-bg)};
+	}
+
+	@each $key, $value in $values {
+		--#{theme-name($key)}: #{to-length($value)};
+	}
+}

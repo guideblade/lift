@@ -1,0 +1,137 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { type BaseProps, deriveName } from '@libs/astro'
+import { createBlock } from '@libs/bem'
+import { elementTag } from '@libs/instance'
+import { componentAttributes, instanceAttributes } from '@libs/attributes'
+import Text from '@primitives/text'
+import type { NavSimpleTabsContent } from '../model/nav-simple-tabs'
+
+const component = createBlock(deriveName(Astro.self))
+const Tag = elementTag(component.block)
+
+type Item = {
+	value: string
+	label: string
+	disabled?: boolean
+}
+
+type Props = BaseProps<'secondary'> &
+	Pick<NavSimpleTabsContent, 'sampleSlots'> &
+	Omit<HTMLAttributes<'div'>, 'class'> & {
+		items: Item[]
+		value?: string
+		label?: string
+		orientation?: 'horizontal' | 'vertical'
+		activation?: 'automatic' | 'manual'
+	}
+
+const {
+	variant = 'primary',
+	items,
+	value,
+	label,
+	orientation = 'horizontal',
+	activation = 'automatic',
+	sampleSlots,
+	id = `${component.block}-${crypto.randomUUID()}`,
+	class: className,
+	hover,
+	hoverSource,
+	...props
+} = Astro.props as Props
+const enabled = items.filter(item => !item.disabled)
+const selected = enabled.find(item => item.value === value)?.value ?? enabled[0]?.value
+const tabs = await Promise.all(
+	items.map(async (item, index) => ({
+		...item,
+		isSelected: item.value === selected,
+		triggerId: `${id}-trigger-${index}`,
+		panelId: `${id}-panel-${index}`,
+		content: Astro.slots.has(item.value) ? await Astro.slots.render(item.value) : '',
+		Sample: sampleSlots?.[item.value],
+	})),
+)
+---
+
+<Tag
+	{...componentAttributes(component.block, { hover, hoverSource })}
+	{...instanceAttributes(component.block, { requiresJs: false })}
+	{...component.dataset({ value: selected, label, orientation, activation })}
+	{...{ id, 'data-orientation': orientation }}
+	class:list={[component.block, component.variant(variant), className]}
+	{...props}>
+	<div
+		class:list={component.element('list')}
+		{...component.dataset({ list: '' })}
+		role="tablist"
+		aria-label={label}
+		aria-orientation={orientation}
+		data-orientation={orientation}>
+		{tabs.map(tab => (
+			<button
+				type="button"
+				class:list={component.element('trigger')}
+				{...component.dataset({ trigger: tab.value })}
+				id={tab.triggerId}
+				role="tab"
+				aria-selected={tab.isSelected ? 'true' : 'false'}
+				aria-controls={tab.panelId}
+				tabindex={tab.isSelected ? 0 : -1}
+				data-orientation={orientation}
+				disabled={tab.disabled}>
+				<Text tag="span" text={tab.label} />
+			</button>
+		))}
+		<div
+			class:list={component.element('indicator')}
+			{...component.dataset({ indicator: '' })}
+			aria-hidden="true"
+			hidden></div>
+	</div>
+	{tabs.map(tab => (
+		<div
+			class:list={component.element('panel')}
+			{...component.dataset({ panel: tab.value })}
+			id={tab.panelId}
+			role="tabpanel"
+			aria-labelledby={tab.triggerId}
+			tabindex="0"
+			data-orientation={orientation}
+			hidden={!tab.isSelected}>
+			{tab.content ? (
+				<Fragment set:html={tab.content} />
+			) : (
+				tab.Sample && <tab.Sample />
+			)}
+		</div>
+	))}
+</Tag>
+
+<script>
+	import '../InstanceNavSimpleTabs'
+</script>
+
+<style lang="scss">
+	@use '@styles/tools.scss' as *;
+	@use './nav-simple-tabs.scss' as *;
+	@use 'block:name' as block;
+
+	$name: block.$name;
+
+	@layer block {
+		.#{$name} {
+			$self: &;
+
+			@include cq(small) {
+				@include small($self);
+			}
+			@include cq(medium) {
+				@include medium($self);
+			}
+			@include cq(large) {
+				@include large($self);
+			}
+		}
+	}
+</style>

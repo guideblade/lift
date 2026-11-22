@@ -1,0 +1,139 @@
+---
+import { type BaseProps, deriveName } from '@libs/astro'
+import { createBlock } from '@libs/bem'
+import { withBase } from '@libs/url'
+import { componentAttributes, originAttributes } from '@libs/attributes'
+import { page } from '../../_page.ts'
+import { components, headlessLabel, sections, trail } from '../../_lib/docs.ts'
+import { tokensOf } from '../../_lib/marks.ts'
+
+const component = createBlock(deriveName(Astro.self))
+type Props = BaseProps & {
+	current?: string
+}
+
+const props = Astro.props as Props
+const { current, variant = 'primary', class: className, hover, hoverSource } = props
+---
+
+<nav
+	{...componentAttributes(component.block, { hover, hoverSource })}
+	{...originAttributes(page.id)}
+	class:list={[
+		component.block,
+		component.variant(variant),
+		'flex min-h-0 flex-col border-b border-neutral-800 lg:border-r lg:border-b-0',
+		className,
+	]}
+	data-docs-nav>
+	<div class="flex items-center gap-3 border-b border-neutral-800 p-3 lg:flex-col lg:items-stretch">
+		<a
+			href={withBase('components')}
+			class="hidden items-baseline gap-2 px-1 text-base font-bold text-white lg:flex cursor-default"
+			data-docs-link>
+			Components
+			<span class="text-xs font-normal text-neutral-500">{components.length}</span>
+		</a>
+		<button
+			type="button"
+			class="flex shrink-0 items-center gap-1.5 text-sm font-semibold text-white lg:hidden"
+			aria-controls="docs-component-list"
+			aria-expanded="false"
+			data-docs-toggle>
+			Components{' '}
+			<span class="text-xs font-normal text-sky-400">{components.length}</span>{' '}
+			<span aria-hidden="true" class="text-sky-400">
+				&#8964;
+			</span>
+		</button>
+		<label class="relative flex min-w-0 flex-1 items-center lg:flex-none">
+			<span class="sr-only">Find components</span>
+			<input
+				type="search"
+				placeholder="Find components"
+				autocomplete="off"
+				spellcheck="false"
+				class="w-full rounded-md border border-neutral-800 bg-neutral-900 py-1.5 pr-7 pl-2.5 text-sm text-neutral-100 outline-none placeholder:text-neutral-500 hover:border-neutral-700 focus:border-sky-500 [&::-webkit-search-cancel-button]:hidden"
+				data-docs-search
+			/>
+			<kbd class="pointer-events-none absolute right-2 rounded border border-neutral-700 px-1 font-mono text-[0.625rem] leading-4 text-neutral-500">
+				/
+			</kbd>
+		</label>
+	</div>
+	<div id="docs-component-list" popover="auto" class="docs-drawer" data-docs-drawer>
+		<div class="flex shrink-0 items-center justify-between border-b border-neutral-800 px-3 py-2 lg:hidden">
+			<span class="text-xs text-sky-300">Browse components</span>
+			<button
+				type="button"
+				popovertarget="docs-component-list"
+				popovertargetaction="hide"
+				class="px-2 py-1 text-xs text-sky-300">
+				Close
+			</button>
+		</div>
+		<div class="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto p-2">
+			{sections().map(([label, items]) => (
+				<details open class="group/section" data-docs-section>
+					<summary class="flex list-none items-center gap-1.5 rounded px-1.5 py-1.5 text-[0.6875rem] tracking-wider text-neutral-500 uppercase select-none hover:text-neutral-300 [&::-webkit-details-marker]:hidden">
+						<svg
+							viewBox="0 0 16 16"
+							aria-hidden="true"
+							class="size-3 shrink-0 transition-transform group-open/section:rotate-90">
+							<path
+								d="M6 4l4 4-4 4"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="1.5"
+							/>
+						</svg>
+						{label}
+					</summary>
+					<div class="flex flex-col gap-px pb-2">
+						{items.map(item => (
+							<a
+								href={withBase(`components/${item.id}`)}
+								aria-current={item.id === current ? 'page' : undefined}
+								class="flex items-center gap-1.5 rounded-md py-1 pr-2 pl-6 text-neutral-300 hover:bg-neutral-900 hover:text-white aria-[current=page]:bg-sky-500/15 aria-[current=page]:text-sky-300 cursor-default"
+								data-docs-link
+								data-docs-item={`${item.title} ${trail(item)}`.toLowerCase()}
+								data-docs-tokens={tokensOf(item).join(' ')}>
+								<span class="min-w-0 flex-1 truncate">{item.title}</span>
+								{label === headlessLabel && (
+									<span class="shrink-0 truncate text-[0.625rem] text-neutral-500">
+										{trail(item)}
+									</span>
+								)}
+								{item.tags.map(tag => (
+									<span class="shrink-0 rounded bg-neutral-800 px-1 text-[0.625rem] leading-4 text-neutral-400">
+										#{tag}
+									</span>
+								))}
+								{item.checks.length > 0 && (
+									<span
+										class:list={[
+											'shrink-0 rounded px-1 text-[0.625rem] leading-4',
+											item.checks.every(check => check.done)
+												? 'bg-emerald-500/15 text-emerald-300'
+												: 'bg-neutral-800 text-neutral-400',
+										]}
+										title={item.checks
+											.map(
+												check =>
+													`${check.done ? '✓' : '○'} ${check.label}`,
+											)
+											.join('\n')}>
+										{`${item.checks.filter(check => check.done).length}/${item.checks.length}`}
+									</span>
+								)}
+							</a>
+						))}
+					</div>
+				</details>
+			))}
+			<p hidden class="px-2 py-4 text-neutral-500" data-docs-empty>
+				Nothing matches.
+			</p>
+		</div>
+	</div>
+</nav>

@@ -1,0 +1,16 @@
+@import './reset.css' layer(reset);
+@import './tailwind.css';
+
+@layer base {
+	html {
+		font-family: var(--font-cal-sans);
+		overscroll-behavior: none;
+		scrollbar-gutter: stable;
+	}
+
+	html body {
+		margin: 0;
+		color: var(--color-symbol);
+		background-color: var(--color-surface);
+	}
+}

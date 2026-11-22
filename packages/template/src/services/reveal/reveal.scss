@@ -1,0 +1,68 @@
+@use 'sass:list';
+@use 'sass:map';
+@use '@styles/tools.scss' as *;
+
+$offsets: (
+	fade: (),
+	fade-up: (
+		y: 1,
+	),
+	fade-down: (
+		y: -1,
+	),
+	fade-left: (
+		x: 1,
+	),
+	fade-right: (
+		x: -1,
+	),
+	zoom-in: (
+		scale: 0.6,
+	),
+	zoom-out: (
+		scale: 1.2,
+	),
+);
+$-states: (hidden, entering, visible);
+$variables: (duration, delay, ease, distance);
+
+@function variable($key) {
+	@if not list.index($variables, $key) {
+		@error 'Unknown reveal variable `#{$key}`. Expected one of: #{$variables}.';
+	}
+
+	@return --service-reveal-#{$key};
+}
+
+@function offset($preset) {
+	@if not map.has-key($offsets, $preset) {
+		@error 'Unknown reveal preset `#{$preset}`. Expected one of: #{map.keys($offsets)}.';
+	}
+
+	@return map.merge(
+		(
+			x: 0,
+			y: 0,
+			scale: 1,
+		),
+		map.get($offsets, $preset)
+	);
+}
+
+@mixin state($state) {
+	@if not list.index($-states, $state) {
+		@error 'Unknown reveal state `#{$state}`. Expected one of: #{$-states}.';
+	} @else {
+		&[#{data-attribute(service-reveal-state)}='#{$state}'] {
+			@content;
+		}
+	}
+}
+
+@mixin stagger($step: 80ms, $count: 12) {
+	@for $index from 2 through $count {
+		&:nth-child(#{$index}) {
+			#{variable(delay)}: #{$step * ($index - 1)};
+		}
+	}
+}

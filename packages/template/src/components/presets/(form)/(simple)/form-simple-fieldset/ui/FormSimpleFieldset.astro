@@ -1,0 +1,19 @@
+---
+import type { ComponentProps } from 'astro/types'
+import FormSimpleFieldset from '@blocks/(form)/(simple)/form-simple-fieldset'
+import Fieldset from '@primitives/fieldset'
+
+type Props = Omit<ComponentProps<typeof Fieldset>, 'variant'> & {
+	variant?: ComponentProps<typeof FormSimpleFieldset>['variant']
+}
+
+const { variant, class: className, ...props } = Astro.props as Props
+---
+
+<FormSimpleFieldset variant={variant} class:list={[className]}>
+	<Fragment slot="fieldset">
+		<Fieldset variant="secondary" {...props}>
+			<slot />
+		</Fieldset>
+	</Fragment>
+</FormSimpleFieldset>

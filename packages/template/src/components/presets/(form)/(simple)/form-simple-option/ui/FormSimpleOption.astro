@@ -1,0 +1,12 @@
+---
+import type { ComponentProps } from 'astro/types'
+import Option from '@primitives/option'
+
+type Props = Omit<ComponentProps<typeof Option>, 'variant'>
+
+const props = Astro.props as Props
+---
+
+<Option variant="tertiary" {...props}>
+	<slot />
+</Option>

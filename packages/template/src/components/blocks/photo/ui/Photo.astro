@@ -1,0 +1,160 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { type BaseProps, deriveName } from '@libs/astro'
+import { createBlock } from '@libs/bem'
+import { config, viewportQuery, type AppConfig } from '@config'
+import { GENERATED_FORMATS } from '../lib/photoValidator.ts'
+import globalScope, { type PhotoScopes } from '../_generated/photos.ts'
+import { componentAttributes } from '@libs/attributes'
+import photoSets from 'virtual:lift-photos'
+import Text from '@primitives/text'
+
+type Phase = keyof AppConfig['devices']
+type Sizes = '100vw' | '80vw' | '50vw' | '33vw' | (string & {})
+type Layout = `full-${'width' | 'height' | 'size'}-${'cover' | 'contain'}`
+
+const phases = (Object.entries(config.devices) as [Phase, number][])
+	.sort(([, a], [, b]) => a - b)
+	.map(([phase]) => phase)
+
+const component = createBlock(deriveName(Astro.self))
+
+type Source =
+	| { from?: undefined; name: PhotoScopes[typeof globalScope] }
+	| {
+			[Scope in keyof PhotoScopes]: { from: Scope; name: PhotoScopes[Scope] }
+	  }[keyof PhotoScopes]
+
+type Props = BaseProps &
+	Omit<HTMLAttributes<'picture'>, 'class'> &
+	Source & {
+		alt: string
+		layout?: Layout
+		sizes?: Sizes | Partial<Record<Phase, Sizes>>
+		loading?: 'lazy' | 'eager'
+		priority?: boolean
+	}
+
+const {
+	from = globalScope,
+	name,
+	alt,
+	class: className,
+	layout = 'full-width-cover',
+	sizes,
+	priority = false,
+	loading = priority ? 'eager' : 'lazy',
+	variant = 'primary',
+	hover,
+	hoverSource,
+	...props
+} = Astro.props as Props
+
+const scope = photoSets[from] ?? {}
+const set = scope[name]
+const available = Object.keys(scope).join(', ') || 'none'
+
+if (!set) {
+	const message = `[Photo] Image "${name}" was not found in ${from}/. Available images: ${available}`
+	if (import.meta.env.PROD) {
+		throw new Error(message)
+	}
+	console.warn(message)
+}
+
+const defaultSizes = loading === 'lazy' ? 'auto, 100vw' : '100vw'
+
+const sizesFor = (phase: Phase) => {
+	if (typeof sizes === 'string') {
+		return sizes
+	}
+	const inherited = phases
+		.slice(0, phases.indexOf(phase) + 1)
+		.map(p => sizes?.[p])
+		.filter(Boolean)
+		.pop()
+	return inherited ?? defaultSizes
+}
+
+const present = set ? phases.filter(phase => set[phase]) : []
+const [imgPhase, ...mediaPhases] = present
+const img = imgPhase ? set[imgPhase] : undefined
+
+const pictureSources = [
+	...mediaPhases.reverse().map(phase => ({
+		phase,
+		media: viewportQuery(phase),
+	})),
+	...(imgPhase ? [{ phase: imgPhase, media: undefined }] : []),
+].flatMap(({ phase, media }) =>
+	GENERATED_FORMATS.filter(format => set[phase].candidates[format].length).map(
+		format => ({
+			media,
+			type: `image/${format}`,
+			srcset: set[phase].candidates[format]
+				.map(c => `${c.src} ${c.width}w`)
+				.join(', '),
+			sizes: sizesFor(phase),
+			width: set[phase].width,
+			height: set[phase].height,
+		}),
+	),
+)
+---
+
+<picture
+	{...componentAttributes(component.block, { hover, hoverSource })}
+	{...props}
+	class:list={[
+		component.block,
+		component.variant(variant),
+		img ? component.modifier(`layout-${layout}`) : component.modifier('missing'),
+		className,
+	]}>
+	{img ? (
+		<>
+			{pictureSources.map(source => (
+				<source {...source} />
+			))}
+			<img
+				class={component.element('img')}
+				src={img.fallback.src}
+				width={img.width}
+				height={img.height}
+				alt={alt}
+				loading={loading}
+				decoding="async"
+				fetchpriority={priority ? 'high' : undefined}
+			/>
+		</>
+	) : (
+		<span role="img" aria-label={alt} title={`Available images: ${available}`}>
+			<Text tag="span" text={`Image missing: ${name}`} />
+		</span>
+	)}
+</picture>
+
+<style lang="scss">
+	@use '@styles/tools.scss' as *;
+
+	@use './photo.scss' as *;
+	@use 'block:name' as block;
+
+	$name: block.$name;
+
+	@layer block {
+		.#{$name} {
+			$self: &;
+
+			@include cq(small) {
+				@include small($self);
+			}
+			@include cq(medium) {
+				@include medium($self);
+			}
+			@include cq(large) {
+				@include large($self);
+			}
+		}
+	}
+</style>

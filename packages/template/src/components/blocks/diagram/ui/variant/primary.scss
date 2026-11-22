@@ -1,0 +1,14 @@
+@use '@styles/tools.scss' as *;
+
+@mixin small($self) {
+	--pele-bg: #{color(surface)};
+	--pele-fg: #{color(symbol)};
+	--pele-muted: #{color(symbol-200)};
+	--pele-line: #{color(decorator)};
+	--pele-surface: #{color(surface-100)};
+	--pele-surface-alt: color-mix(in oklab, #{color(surface-100)} 50%, #{color(surface)});
+	--pele-border: #{color(decorator-100)};
+	--pele-accent: #{color(accent)};
+	--pele-critical: #{color(semantic-error)};
+	--pele-error: #{color(semantic-error)};
+}

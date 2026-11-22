@@ -1,0 +1,42 @@
+@use '@styles/tools.scss' as *;
+
+@mixin small($self) {
+	min-height: 100dvh;
+
+	#{be($self, 'skip-link')} {
+		position: fixed;
+		inset-block-start: pxr(16px);
+		inset-inline-start: pxr(16px);
+		z-index: 10;
+		padding: pxr(8px) pxr(16px);
+		text-decoration: underline;
+		color: CanvasText;
+		background: Canvas;
+		border: 1px solid CanvasText;
+
+		&:not(:focus) {
+			clip-path: inset(50%);
+		}
+	}
+
+	#{be($self, 'inner')} {
+		display: grid;
+		grid-template-areas: 'layer';
+		min-height: 100dvh;
+
+		> :global(*) {
+			z-index: var(--layer);
+			grid-area: layer;
+			min-width: 0;
+		}
+	}
+
+	#{be($self, 'page')} {
+		display: flex;
+		flex-direction: column;
+
+		> main {
+			flex: 1;
+		}
+	}
+}

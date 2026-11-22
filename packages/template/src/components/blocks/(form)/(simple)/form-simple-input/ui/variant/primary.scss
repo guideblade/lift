@@ -1,0 +1,62 @@
+@use '@styles/tools.scss' as *;
+
+@mixin small($self) {
+	--form-simple-input-font-size: var(--form-font-size, #{pxr(16px)});
+	--form-simple-input-padding-x: var(--form-padding-x, #{pxr(22px)});
+	--form-simple-input-padding-y: var(--form-padding-y, #{pxr(14px)});
+	--form-simple-input-border-width: var(--form-border-width, 2px);
+	--form-simple-input-border-color: var(--form-border-color, #{color(decorator-100)});
+	--form-simple-input-border-radius: var(--form-border-radius, 16px);
+	--form-simple-input-duration: var(--form-duration, 300ms);
+	--_form-simple-input-border-color: var(--form-simple-input-border-color);
+	--input-color: var(--form-symbol-color, #{color(symbol)});
+	--input-placeholder-color: var(--form-placeholder-color, #{color(symbol-100)});
+	--input-padding: var(--form-simple-input-padding-y) var(--form-simple-input-padding-x);
+	--input-font-size: var(--form-simple-input-font-size);
+	display: inline-grid;
+	grid-template-areas: 'self';
+
+	> * {
+		grid-area: self;
+	}
+
+	&:focus-within,
+	&:has(
+		input:not(
+			:placeholder-shown,
+			[type='date'],
+			[type='datetime-local'],
+			[type='month'],
+			[type='time'],
+			[type='week'],
+			[type='color'],
+			[type='file']
+		)
+	) {
+		--_form-simple-input-border-color: var(
+			--form-border-color-focus,
+			#{color(decorator)}
+		);
+	}
+
+	#{be($self, 'backdrop')} {
+		position: relative;
+		z-index: 1;
+		border: var(--form-simple-input-border-width) solid
+			var(--_form-simple-input-border-color);
+		border-radius: var(--form-simple-input-border-radius);
+		transition: border-color var(--form-simple-input-duration) ease;
+		pointer-events: none;
+	}
+
+	#{be($self, 'input')} {
+		z-index: 2;
+	}
+
+	@include hover($self) {
+		--_form-simple-input-border-color: var(
+			--form-border-color-focus,
+			#{color(decorator)}
+		);
+	}
+}

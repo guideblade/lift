@@ -1,0 +1,71 @@
+default:
+    image: node:24.21.0
+    cache:
+        - &pnpm-cache
+          key:
+              files:
+                  - pnpm-lock.yaml
+          paths:
+              - .pnpm-store
+        - &photo-cache
+          key: photo-cache
+          paths:
+              - packages/template/.cache/photo
+
+stages:
+    - verify
+    - deploy
+
+before_script:
+    - npm install --global pnpm@11.20.0
+    - pnpm config set store-dir .pnpm-store
+    - pnpm install --frozen-lockfile
+
+verify:
+    stage: verify
+    script:
+        - pnpm -r verify
+        - pnpm exec markdownlint-cli2
+    rules:
+        - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+        - if: "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH"
+
+lighthouse:
+    stage: verify
+    variables:
+        PLAYWRIGHT_BROWSERS_PATH: $CI_PROJECT_DIR/.cache/ms-playwright
+    cache:
+        - *pnpm-cache
+        - *photo-cache
+        - key:
+              prefix: playwright
+              files:
+                  - pnpm-lock.yaml
+          paths:
+              - .cache/ms-playwright
+    script:
+        - pnpm --filter @lift/template exec playwright install --with-deps chromium
+        - pnpm lift audit lighthouse
+    artifacts:
+        when: always
+        expire_in: 30 days
+        expose_as: Lighthouse report
+        paths:
+            - packages/template/lighthouse-report/
+        reports:
+            junit: packages/template/lighthouse-report/junit.xml
+    rules:
+        - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+        - if: "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH"
+
+pages:
+    stage: deploy
+    script:
+        - pnpm --filter @lift/template build
+    pages:
+        publish: packages/template/dist
+    artifacts:
+        paths:
+            - packages/template/dist
+    rules:
+        - if: "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH"

@@ -1,0 +1,17 @@
+---
+import type { ComponentProps } from 'astro/types'
+import FormSimpleTextarea from '@blocks/(form)/(simple)/form-simple-textarea'
+import Textarea from '@primitives/textarea'
+
+type Props = Omit<ComponentProps<typeof Textarea>, 'variant'> & {
+	variant?: ComponentProps<typeof FormSimpleTextarea>['variant']
+}
+
+const { variant, class: className, ...props } = Astro.props as Props
+---
+
+<FormSimpleTextarea variant={variant} class:list={[className]}>
+	<Fragment slot="textarea">
+		<Textarea variant="secondary" {...props} />
+	</Fragment>
+</FormSimpleTextarea>

@@ -1,0 +1,14 @@
+@use '@styles/tools.scss' as *;
+
+@mixin small($self) {
+	--pele-bg: #0b2a4a;
+	--pele-fg: #e6f0ff;
+	--pele-muted: #9db6d6;
+	--pele-line: #cfe0ff;
+	--pele-surface: #123a63;
+	--pele-surface-alt: #0f3256;
+	--pele-border: #5f86b3;
+	--pele-accent: #ffd166;
+	--pele-critical: #ff6b6b;
+	--pele-error: #ff6b6b;
+}

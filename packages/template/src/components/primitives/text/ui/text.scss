@@ -1,0 +1,21 @@
+@use 'sass:meta';
+@use 'block:name' as block;
+@use '@styles/tools.scss' as *;
+@use './shared';
+@use '../_generated/variants' as generated;
+
+$name: block.$name;
+$shared: meta.module-mixins('shared');
+$variants: generated.$variants;
+
+@mixin small($self) {
+	@include phase(small, $self, $name, $variants, $shared);
+}
+
+@mixin medium($self) {
+	@include phase(medium, $self, $name, $variants, $shared);
+}
+
+@mixin large($self) {
+	@include phase(large, $self, $name, $variants, $shared);
+}

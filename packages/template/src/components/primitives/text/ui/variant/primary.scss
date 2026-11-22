@@ -1,0 +1,21 @@
+@use '@styles/tools.scss' as *;
+@use '../mixins' as *;
+
+@mixin small($self) {
+	@include degree(100, $size: pxr(16px), $font: var(--font-cal-sans));
+	@include degree(120, $size: pxr(18px), $font: var(--font-faculty-glyphic));
+	@include degree(140, $size: pxr(20px), $font: var(--font-inter));
+	@include degree(160, $size: pxr(22px));
+	@include degree(180, $size: pxr(24px));
+	@include degree(200, $size: pxr(26px));
+}
+
+@mixin medium($self) {
+	@include degree(100, $size: pxr(16px));
+	@include degree(120, $size: pxr(20px));
+}
+
+@mixin large($self) {
+	@include degree(100, $size: pxr(16px));
+	@include degree(120, $size: pxr(20px));
+}

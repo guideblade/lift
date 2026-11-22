@@ -1,0 +1,23 @@
+{
+	"extends": "astro/tsconfigs/strict",
+	"include": [".astro/types.d.ts", "lift.d.ts", "**/*"],
+	"exclude": ["dist"],
+	"compilerOptions": {
+		"moduleResolution": "bundler",
+		"paths": {
+			"@config": ["./src/site/config/site.config.ts"],
+			"@site/*": ["./src/site/*"],
+			"@primitives/*": ["./src/components/primitives/*"],
+			"@blocks/*": ["./src/components/blocks/*"],
+			"@presets/*": ["./src/components/presets/*"],
+			"@behaviors/*": ["./src/behaviors/*"],
+			"@services": ["./src/services/index.ts"],
+			"@libs/*": ["./src/libs/*"],
+			"@widgets/*": ["./src/components/widgets/*"],
+			"@styles/*": ["./src/libs/styles/*"],
+			"@e2e": ["./e2e/fixtures/index.ts"],
+			"@scripts/*": ["./scripts/*"],
+			"@/*": ["./src/*"]
+		}
+	}
+}

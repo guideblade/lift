@@ -1,0 +1,128 @@
+---
+import Layout from '@widgets/layout'
+import { withBase } from '@libs/url'
+import { pageRoutes, type PageConfig, type PageStatus } from '@libs/page'
+import { config } from '@config'
+import '../components/_ui/docs-theme/tron.css'
+
+const modules = import.meta.glob<{ page?: PageConfig }>(
+	['/src/pages/**/_page.ts', '!/src/pages/_blueprints/**'],
+	{ eager: true },
+)
+
+const pages = Object.entries(modules)
+	.flatMap(([source, { page }]) => {
+		if (!page) {
+			return []
+		}
+
+		const directory = source
+			.slice('/src/pages/'.length)
+			.replace(/^_dev\//, '')
+			.replace(/_page\.ts$/, '')
+			.replace(/\/$/, '')
+		const path = `/${directory}`
+
+		return [
+			{
+				path,
+				source: source.slice(1),
+				status: page.status,
+				variants: pageRoutes(directory, page, config.site.language)
+					.filter(route => route.pattern !== path)
+					.map(route => ({
+						label: [route.locale, route.state && `@${route.state}`]
+							.filter(Boolean)
+							.join(' '),
+						path: route.pattern,
+					})),
+			},
+		]
+	})
+	.sort((a, b) => a.path.localeCompare(b.path))
+
+const status = {
+	ready: { label: 'Ready', dot: 'bg-emerald-400' },
+	draft: { label: 'Draft', dot: 'bg-amber-400' },
+	paused: { label: 'Paused', dot: 'bg-sky-400' },
+	deprecated: { label: 'Deprecated', dot: 'bg-rose-400' },
+} satisfies Record<PageStatus, { label: string; dot: string }>
+const routeLink =
+	'rounded-sm text-sky-300 hover:text-white hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400'
+---
+
+<Layout seo={{ title: 'Pages' }} class="scheme-dark">
+	<Fragment slot="header" />
+	<Fragment slot="footer" />
+	<div class="min-h-dvh bg-neutral-950 text-sm text-neutral-300" data-docs-app>
+		<header class="border-b border-neutral-800 bg-neutral-950">
+			<div class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-3 md:px-6">
+				<div class="flex items-baseline gap-2">
+					<h1 class="text-base font-semibold text-white">Pages</h1>
+					<span class="font-mono text-xs text-neutral-400">{pages.length}</span>
+				</div>
+				<a href={withBase('components')} class:list={[routeLink, 'text-xs']}>
+					Components <span aria-hidden="true">↗</span>
+				</a>
+			</div>
+		</header>
+
+		<div class="mx-auto max-w-5xl px-4 py-4 md:px-6">
+			{pages.length ? (
+				<ul
+					aria-label="Project pages"
+					class="overflow-hidden rounded-md border border-neutral-800 bg-neutral-950 divide-y divide-neutral-800">
+					{pages.map(page => (
+						<li class="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-x-3 gap-y-2 px-3 py-2.5 hover:bg-neutral-900 md:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)_auto]">
+							<div class="min-w-0">
+								<a
+									href={withBase(page.path)}
+									class:list={[
+										routeLink,
+										'font-mono font-medium wrap-anywhere',
+									]}>
+									{page.path}
+								</a>
+								<code class="mt-0.5 block text-xs text-neutral-400 wrap-anywhere">
+									{page.source}
+								</code>
+							</div>
+							<span class="inline-flex items-center gap-1.5 pt-0.5 text-xs text-neutral-300 md:col-start-3 md:row-start-1">
+								<span
+									aria-hidden="true"
+									class:list={[
+										'size-1.5 rounded-full',
+										status[page.status].dot,
+									]}></span>
+								{status[page.status].label}
+							</span>
+							{page.variants.length > 0 && (
+								<ul
+									aria-label="Route variants"
+									class="col-span-2 flex min-w-0 flex-wrap gap-1.5 md:col-span-1 md:col-start-2 md:row-start-1">
+									{page.variants.map(variant => (
+										<li class="min-w-0">
+											<a
+												href={withBase(`${variant.path}/`)}
+												title={variant.path}
+												class:list={[
+													routeLink,
+													'block rounded border border-neutral-700 px-1.5 py-0.5 font-mono text-xs wrap-anywhere',
+												]}>
+												{variant.label}
+											</a>
+										</li>
+									))}
+								</ul>
+							)}
+						</li>
+					))}
+				</ul>
+			) : (
+				<p class="rounded-md border border-neutral-800 bg-neutral-950 px-3 py-2.5 text-neutral-400">
+					No pages registered.
+				</p>
+			)}
+		</div>
+	</div>
+</Layout>

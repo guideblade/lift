@@ -1,0 +1,59 @@
+@use 'sass:map';
+@use '@styles/tools.scss' as *;
+@use 'config:reveal' as config;
+@use './reveal.scss' as reveal;
+
+$attribute: data-attribute(service-reveal);
+$state: data-attribute(service-reveal-state);
+$js: ':root[#{data-attribute(document-js)}]';
+$x: --_service-reveal-x;
+$y: --_service-reveal-y;
+$scale: --_service-reveal-scale;
+$distance: var(#{reveal.variable(distance)}, #{config.$reveal-distance});
+
+@mixin offset($preset) {
+	$offset: reveal.offset($preset);
+	#{$x}: map.get($offset, x);
+	#{$y}: map.get($offset, y);
+	#{$scale}: map.get($offset, scale);
+}
+
+@mixin hidden {
+	opacity: 0;
+	translate: calc(var(#{$x}) * #{$distance}) calc(var(#{$y}) * #{$distance});
+	scale: var(#{$scale});
+}
+
+@keyframes service-reveal {
+	from {
+		@include hidden;
+	}
+}
+
+@if config.$reveal-enabled {
+	@layer service {
+		[#{$attribute}] {
+			@include offset(config.$reveal-preset);
+		}
+
+		@each $preset in config.$reveal-presets {
+			[#{$attribute}='#{$preset}'] {
+				@include offset($preset);
+			}
+		}
+
+		@media not all and #{config.$reveal-reduced-motion} {
+			#{$js} [#{$attribute}]:not([#{$state}]),
+			[#{$attribute}][#{$state}='hidden'] {
+				@include hidden;
+			}
+
+			[#{$attribute}][#{$state}='entering'] {
+				animation: service-reveal
+					var(#{reveal.variable(duration)}, #{config.$reveal-duration})
+					var(#{reveal.variable(ease)}, #{config.$reveal-ease})
+					var(#{reveal.variable(delay)}, 0ms) backwards;
+			}
+		}
+	}
+}

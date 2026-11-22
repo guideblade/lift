@@ -1,0 +1,41 @@
+@use 'sass:map';
+@use 'sass:math';
+@use './config';
+
+@function pxr($value, $root-size: 16px) {
+	@if math.unit($value) != 'px' {
+		@error 'pxr() expects a pixel value, received `#{$value}`.';
+	}
+
+	@if math.unit($root-size) != 'px' {
+		@error 'pxr() root size expects a pixel value, received `#{$root-size}`.';
+	}
+
+	@return math.div($value, $root-size) * 1rem;
+}
+
+@function breakpoint($bp) {
+	$size: map.get(config.$devices, $bp);
+
+	@if not $size {
+		@error 'Unknown breakpoint `#{$bp}`.';
+	}
+
+	@return $size;
+}
+
+@function data-attribute($key) {
+	@if not map.has-key(config.$data-attributes, $key) {
+		@error 'Unknown data attribute `#{$key}`. Expected one of: #{map.keys(config.$data-attributes)}.';
+	}
+
+	@return map.get(config.$data-attributes, $key);
+}
+
+@function instance-state($state) {
+	@if not map.has-key(config.$instance-states, $state) {
+		@error 'Unknown instance state `#{$state}`. Expected one of: #{map.keys(config.$instance-states)}.';
+	}
+
+	@return "[#{data-attribute(instance-state)}='#{map.get(config.$instance-states, $state)}']";
+}

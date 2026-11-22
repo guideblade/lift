@@ -1,0 +1,9 @@
+@use './proximity.scss' as proximity;
+
+@each $channel, $variable in proximity.$variables {
+	@property #{$variable} {
+		inherits: true;
+		initial-value: 0;
+		syntax: '<number>';
+	}
+}

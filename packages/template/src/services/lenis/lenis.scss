@@ -1,0 +1,23 @@
+@use '@styles/tools.scss' as *;
+
+$lenis: '[#{data-attribute(service-lenis)}]';
+$state: data-attribute(service-lenis-state);
+
+@layer service {
+	html#{$lenis}[#{$state}],
+	html#{$lenis}[#{$state}] body {
+		height: auto;
+	}
+
+	[#{$state}='stopped'] {
+		overflow: clip;
+	}
+
+	[#{$state}='smooth'] iframe {
+		pointer-events: none;
+	}
+
+	[#{data-attribute(service-lenis-prevent)}] {
+		overscroll-behavior: contain;
+	}
+}

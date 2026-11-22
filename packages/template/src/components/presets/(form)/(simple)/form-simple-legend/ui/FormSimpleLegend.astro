@@ -1,0 +1,19 @@
+---
+import type { ComponentProps } from 'astro/types'
+import FormSimpleLegend from '@blocks/(form)/(simple)/form-simple-legend'
+import Legend from '@primitives/legend'
+
+type Props = Omit<ComponentProps<typeof Legend>, 'variant'> & {
+	variant?: ComponentProps<typeof FormSimpleLegend>['variant']
+}
+
+const { variant, class: className, ...props } = Astro.props as Props
+---
+
+<FormSimpleLegend variant={variant} class:list={[className]}>
+	<Fragment slot="legend">
+		<Legend variant="secondary" {...props}>
+			<slot />
+		</Legend>
+	</Fragment>
+</FormSimpleLegend>

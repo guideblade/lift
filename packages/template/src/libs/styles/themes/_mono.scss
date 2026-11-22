@@ -1,0 +1,17 @@
+$colors: (
+	symbol: light-dark(#000000, #ffffff),
+	symbol-100: light-dark(#a1a1a1, #9e9e9e),
+	symbol-200: light-dark(#535353, #494949),
+	surface: light-dark(#ffffff, #000000),
+	surface-100: light-dark(#cfcfcf, #0e0e0e),
+	surface-200: light-dark(#a1a1a1, #313131),
+	decorator: light-dark(#000000, #ffffff),
+	decorator-100: light-dark(#a1a1a1, #9e9e9e),
+	decorator-200: light-dark(#535353, #494949),
+	accent: light-dark(#000000, #ffffff),
+	accent-100: light-dark(#a1a1a1, #9e9e9e),
+	accent-200: light-dark(#535353, #494949),
+	semantic-success: light-dark(green, green),
+	semantic-error: light-dark(red, red),
+	semantic-warning: light-dark(yellow, yellow),
+);

@@ -1,0 +1,192 @@
+@use 'sass:list';
+@use 'sass:map';
+@use 'sass:selector';
+@use 'sass:string';
+@use './bem';
+@use './config';
+@use './functions';
+
+@mixin cq($bp, $container: null) {
+	$size: functions.breakpoint($bp);
+
+	@if not $container {
+		@container (width >= #{$size}) {
+			@content;
+		}
+	} @else {
+		/* stylelint-disable-next-line container-name-pattern */
+		@container #{$container} (width >= #{$size}) {
+			@content;
+		}
+	}
+}
+
+@mixin mq($bp) {
+	$size: functions.breakpoint($bp);
+
+	@media (width >= #{$size}) {
+		@content;
+	}
+}
+
+@mixin is-container($name: null) {
+	container-type: inline-size;
+
+	@if $name {
+		container-name: #{$name};
+	}
+}
+
+@function -is-root($selector) {
+	@each $complex in selector.parse($selector) {
+		@if list.length($complex) > 1 {
+			@return false;
+		}
+	}
+
+	@return true;
+}
+
+@function -enabled($selector, $mode) {
+	$result: ();
+
+	@each $complex in selector.parse($selector) {
+		$root: selector.append(list.nth($complex, 1), ':where(:not([#{$mode}="off"]))');
+		$complex: list.set-nth($complex, 1, string.unquote('#{$root}'));
+		$result: list.append($result, $complex, $separator: comma);
+	}
+
+	@return $result;
+}
+
+@mixin hover($self) {
+	$mode: functions.data-attribute(hover);
+	$source: functions.data-attribute(hover-source);
+
+	@if string.index('#{&}', '#{$self}') != 1 {
+		@error 'hover($self) belongs inside the styles of `#{$self}`, found `#{&}`.';
+	}
+
+	@include can-hover {
+		@if -is-root(&) {
+			&:where(:not([#{$mode}='parent'], [#{$mode}='off'])):hover,
+			:global(:where([#{$source}]:hover))
+				&:where(:not([#{$mode}='self'], [#{$mode}='off'])):not(
+					:where([#{$source}]:not(:hover)) *
+				),
+			&[#{$mode}='on'] {
+				@content;
+			}
+		} @else {
+			@at-root #{selector.append(-enabled(&, $mode), ':hover')} {
+				@content;
+			}
+		}
+	}
+}
+
+@mixin scheme($color-scheme) {
+	$scheme: map.get(config.$color-schemes, $color-scheme);
+
+	@if not $scheme {
+		@error 'Unknown color scheme `#{$color-scheme}`.';
+	} @else {
+		@media (prefers-color-scheme: #{$scheme}) {
+			@content;
+		}
+	}
+}
+
+$debug-colors: (
+	rgb(255 0 60 / 65%),
+	rgb(0 220 255 / 65%),
+	rgb(255 210 0 / 65%),
+	rgb(0 230 100 / 65%),
+	rgb(190 60 255 / 65%),
+	rgb(255 120 0 / 65%),
+	rgb(30 140 255 / 65%),
+	rgb(255 0 160 / 65%)
+);
+
+@mixin debug($self, $elements: ()) {
+	&.debug {
+		outline: 2px rgb(255 0 0 / 50%) solid;
+		outline-offset: 1px;
+
+		$i: 1;
+
+		@each $el in $elements {
+			$color-index: (($i - 1) % list.length($debug-colors)) + 1;
+			$color: list.nth($debug-colors, $color-index);
+
+			#{bem.be($self, $el)} {
+				outline: 1px $color dashed;
+				outline-offset: -1px;
+			}
+
+			$i: $i + 1;
+		}
+
+		@content;
+	}
+}
+
+@mixin can-hover {
+	@media (hover: hover) {
+		@content;
+	}
+}
+
+@mixin focus-ring($initial-width: 6px, $resting-width: 2px, $duration: 300ms) {
+	--focus-ring-color: currentcolor;
+	position: relative;
+
+	&:focus-visible {
+		outline: none;
+
+		&::after {
+			position: absolute;
+			inset: -2px;
+			border-radius: inherit;
+			box-shadow: 0 0 0 $initial-width var(--focus-ring-color);
+			animation: ui-focus-ring-settle $duration ease-out forwards;
+			pointer-events: none;
+			content: '';
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		&:focus-visible::after {
+			box-shadow: 0 0 0 $resting-width var(--focus-ring-color);
+			animation: none;
+		}
+	}
+
+	@at-root {
+		@keyframes ui-focus-ring-settle {
+			from {
+				box-shadow: 0 0 0 $initial-width var(--focus-ring-color);
+			}
+
+			to {
+				box-shadow: 0 0 0 $resting-width var(--focus-ring-color);
+			}
+		}
+	}
+}
+
+@mixin spin($duration: 800ms) {
+	animation: ui-spin $duration linear infinite;
+
+	@media (prefers-reduced-motion: reduce) {
+		animation-duration: calc($duration * 3);
+	}
+
+	@at-root {
+		@keyframes ui-spin {
+			to {
+				rotate: 1turn;
+			}
+		}
+	}
+}

@@ -1,0 +1,19 @@
+{
+	"Phase mixins": {
+		"scope": "scss",
+		"prefix": "phase",
+		"body": [
+			"@mixin small(\\$self) {",
+			"\t$1",
+			"}",
+			"",
+			"@mixin medium(\\$self) {",
+			"\t$2",
+			"}",
+			"",
+			"@mixin large(\\$self) {",
+			"\t$0",
+			"}"
+		]
+	}
+}

@@ -1,0 +1,122 @@
+---
+import '@styles/base.css'
+import '@styles/themes.ts'
+import '@styles/root.scss'
+import '@styles/instance.scss'
+import type { HTMLAttributes } from 'astro/types'
+import { type BaseProps, deriveName } from '@libs/astro'
+import { checkBemConfig, createBlock } from '@libs/bem'
+
+import Head from '../head'
+import Footer from '../footer'
+import Body from '../body'
+import type { SeoProps } from '../lib/Seo.astro'
+import { componentAttributes, DataAttribute } from '@libs/attributes'
+import { serviceAttributes, serviceSettings } from '@services'
+import { pageContext, type PageConfig } from '@libs/page'
+import { config } from '@config'
+
+checkBemConfig(config.bem)
+
+const component = createBlock(deriveName(Astro.self))
+
+type Props = BaseProps &
+	Omit<HTMLAttributes<'html'>, 'class'> & {
+		page?: PageConfig
+		language?: string
+		skipLinkLabel?: string
+		scrollbar?: string | null
+		seo?: SeoProps
+	}
+
+const {
+	page,
+	language: languageProp,
+	skipLinkLabel = 'Skip to main content',
+	seo,
+	variant = 'primary',
+	scrollbar = serviceSettings('scrollbar')?.page,
+	class: className,
+	hover,
+	hoverSource,
+	...props
+} = Astro.props as Props
+
+const context = page && pageContext(page, Astro.routePattern, config.site.language)
+const language = languageProp ?? context?.locale ?? config.site.language
+const pageSeo: SeoProps = {
+	...seo,
+	locale: language,
+	noindex: seo?.noindex || Boolean(context?.state),
+	alternates: context?.alternates.map(route => ({
+		locale: route.locale,
+		path: route.pattern === '/' ? '/' : `${route.pattern}/`,
+	})),
+}
+---
+
+<html
+	{...componentAttributes(component.block, { hover, hoverSource })}
+	{...props}
+	{...serviceAttributes('lenis', { root: '' })}
+	{...serviceAttributes('scrollbar', { root: scrollbar ?? undefined })}
+	class:list={[component.block, component.variant(variant), className]}
+	id={component.block}
+	lang={language}>
+	<Head seo={pageSeo} />
+	<Body>
+		<a class={component.element('skip-link')} href="#main-content" tabindex="0">
+			{skipLinkLabel}
+		</a>
+		<div class={component.element('inner')}>
+			<slot name="layers" />
+			<div class={component.element('page')} style="--layer: 1">
+				<slot name="header" />
+				<main
+					id="main-content"
+					tabindex="-1"
+					class:list={[page?.id]}
+					{...(context?.state
+						? { [DataAttribute.pageState]: context.state }
+						: {})}>
+					<slot />
+				</main>
+				<slot name="footer">
+					<Footer />
+				</slot>
+			</div>
+		</div>
+		<script>
+			import '../lib/global'
+		</script>
+	</Body>
+</html>
+
+<style lang="scss">
+	@use '@styles/tools.scss' as *;
+
+	@use './layout.scss' as *;
+	@use 'block:name' as block;
+
+	$name: block.$name;
+
+	@layer widget {
+		.#{$name} {
+			$self: &;
+
+			@include is-container;
+
+			@include cq(small) {
+				@include small($self);
+			}
+
+			@include cq(medium) {
+				@include medium($self);
+			}
+
+			@include cq(large) {
+				@include large($self);
+			}
+		}
+	}
+</style>

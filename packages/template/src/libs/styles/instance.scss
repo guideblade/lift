@@ -1,0 +1,45 @@
+@use './tools.scss' as *;
+
+$requires-js: '[#{data-attribute(instance-requires-js)}="true"]';
+$no-js: ':root:not([#{data-attribute(document-js)}])';
+
+@layer instance {
+	#{$no-js} #{$requires-js},
+	#{$requires-js}#{instance-state(failed)} {
+		box-sizing: border-box;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		min-height: var(--fallback-min-height, pxr(52px));
+		padding: pxr(12px) pxr(16px);
+		font-size: pxr(13px);
+		font-weight: 500;
+		text-align: center;
+		color: var(--color-symbol-100);
+		background-color: var(--color-surface-100);
+		border: 1px dashed var(--color-decorator-100);
+		border-radius: var(--form-border-radius, 14px);
+		pointer-events: none;
+		user-select: none;
+
+		> * {
+			display: none;
+		}
+	}
+
+	#{$no-js} #{$requires-js}::after {
+		display: block;
+		content: var(--fallback-message, 'Please enable JS for this functionality');
+	}
+
+	#{$requires-js}#{instance-state(failed)}::after {
+		display: block;
+		content: var(--fallback-message-failed, 'This control failed to load');
+	}
+
+	#{$requires-js}#{instance-state(unmounted)},
+	#{$requires-js}#{instance-state(mounting)} {
+		pointer-events: none;
+	}
+}

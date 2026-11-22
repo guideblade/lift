@@ -1,0 +1,12 @@
+---
+import type { ComponentProps } from 'astro/types'
+import Optgroup from '@primitives/optgroup'
+
+type Props = Omit<ComponentProps<typeof Optgroup>, 'variant'>
+
+const props = Astro.props as Props
+---
+
+<Optgroup variant="tertiary" {...props}>
+	<slot />
+</Optgroup>

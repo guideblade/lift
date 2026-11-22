@@ -1,0 +1,48 @@
+@use '@styles/tools.scss' as *;
+
+@mixin small($self) {
+	display: block;
+	overflow: hidden;
+	interpolate-size: allow-keywords;
+
+	#{be($self, 'summary')} {
+		padding: pxr(16px);
+		color: #ffffff;
+		background-color: #000000;
+		border-radius: 16px;
+		transition: 300ms;
+		user-select: none;
+	}
+
+	#{be($self, 'inner')} {
+		margin-top: pxr(4px);
+		padding: pxr(16px);
+		color: #ffffff;
+		background-color: #1b1b1b;
+		transition: 300ms;
+		border-bottom: 4px white solid;
+	}
+
+	#{be($self, 'details')}::details-content {
+		block-size: 0;
+		transition:
+			block-size 200ms,
+			content-visibility 200ms;
+		transition-behavior: allow-discrete;
+	}
+
+	#{be($self, 'details')}[open]::details-content {
+		block-size: auto;
+	}
+
+	@include hover($self) {
+		#{be($self, 'summary')} {
+			transition-duration: 0ms;
+		}
+		#{be($self, 'inner')} {
+			transition-duration: 0ms;
+		}
+	}
+
+	@include debug($self, ('details', 'summary', 'inner'));
+}

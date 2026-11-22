@@ -1,0 +1,31 @@
+@use '@styles/tools.scss' as *;
+@use '../mixins' as *;
+
+@mixin small($self) {
+	@include degree(
+		100,
+		$size: pxr(15px),
+		$font: var(--font-inter),
+		$weight: 600,
+		$line-height: 1.25,
+		$color: #245c4a
+	);
+	@include degree(
+		300,
+		$size: pxr(21px),
+		$font: var(--font-inter),
+		$weight: 700,
+		$line-height: 1.2,
+		$color: #245c4a
+	);
+}
+
+@mixin medium($self) {
+	@include degree(100, $size: pxr(17px), $weight: 600);
+	@include degree(300, $size: pxr(24px), $weight: 700);
+}
+
+@mixin large($self) {
+	@include degree(100, $size: pxr(19px), $weight: 600);
+	@include degree(300, $size: pxr(27px), $weight: 700);
+}

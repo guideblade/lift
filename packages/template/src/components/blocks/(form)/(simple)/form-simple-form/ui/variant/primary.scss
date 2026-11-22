@@ -1,0 +1,14 @@
+@use '@styles/tools.scss' as *;
+
+@mixin small($self) {
+	--form-font-size: #{pxr(16px)};
+	--form-padding-x: #{pxr(22px)};
+	--form-padding-y: #{pxr(14px)};
+	--form-border-width: 2px;
+	--form-border-radius: 16px;
+	--form-border-color: #{color(decorator-100)};
+	--form-border-color-focus: #{color(decorator)};
+	--form-symbol-color: #{color(symbol)};
+	--form-placeholder-color: #{color(symbol-100)};
+	--form-duration: 300ms;
+}
